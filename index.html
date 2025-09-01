@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emanuel - Portafolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 20px;
+        }
+
+        .theme-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 15px;
+            background: transparent;
+            color: #888;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn.active {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .resume-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .resume-btn:hover {
+            background: #6d28d9;
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 40px;
+            position: relative;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .profile-image {
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            font-style: italic;
+            background: linear-gradient(135deg, #fff 0%, #888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 40px;
+            max-width: 500px;
+        }
+
+        .hero-resume-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .hero-resume-btn:hover {
+            background: #6d28d9;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+        }
+
+        .section {
+            padding: 100px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 60px;
+            color: white;
+        }
+
+        .experience-item {
+            margin-bottom: 60px;
+            border-left: 2px solid #333;
+            padding-left: 40px;
+            position: relative;
+        }
+
+        .experience-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 14px;
+            height: 14px;
+            background: #7c3aed;
+            border-radius: 50%;
+        }
+
+        .experience-date {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .experience-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .experience-company {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .experience-description {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .skills-container {
+            margin-top: 40px;
+            overflow: hidden;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .skills-carousel {
+            display: flex;
+            gap: 30px;
+            animation: scroll 20s linear infinite;
+            width: fit-content;
+        }
+
+        .skills-carousel:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .skill-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-5px);
+            background: rgba(124, 58, 237, 0.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .skill-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .skill-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #ccc;
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            z-index: -1;
+            background: radial-gradient(circle at 20% 50%, #7c3aed 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, #3b82f6 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, #8b5cf6 0%, transparent 50%);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-window {
+            background: #f5f5f0;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: #4a4a4a;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-content {
+            padding: 40px;
+            text-align: center;
+            color: #333;
+            max-height: calc(90vh - 50px);
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .cv-preview {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .cv-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .cv-placeholder-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #7c3aed;
+        }
+
+        .download-section {
+            margin-top: 30px;
+        }
+
+        .download-btn {
+            background: #ff9500;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 149, 0, 0.3);
+        }
+
+        .download-btn:nth-child(2):hover {
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .contact-info {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .contact-email {
+            color: #ff9500;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .contact-email:hover {
+            text-decoration: underline;
+        }
+
+                    .modal-window {
+                margin: 20px;
+                max-width: none;
+                width: calc(100% - 40px);
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .cv-preview {
+                margin: 20px 0;
+                padding: 15px;
+            }
+            
+            .cv-placeholder {
+                height: 300px;
+            }
+            
+            @media (max-width: 768px) {
+            .download-btn {
+                display: block;
+                margin: 10px auto;
+                width: 80%;
+                max-width: 250px;
+            }
+            
+            .download-btn:nth-child(2) {
+                margin-left: auto;
+            }
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 40px;
+            }
+            
+            .profile-image {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 60px 20px;
+            }
+            
+            .skills-container {
+                overflow-x: auto;
+                padding: 20px 0;
+            }
+            
+            .skills-carousel {
+                animation-play-state: paused;
+                gap: 20px;
+            }
+            
+            .skill-item {
+                min-width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <nav class="navbar">
+        <div class="logo">Emanuel Vazquez</div>
+        <div class="nav-controls">
+            <button class="resume-btn">Perfil</button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="profile-image">
+                <div class="profile-placeholder">TN</div>
+            </div>
+            <div class="hero-text">
+                <h1 class="hero-title">Emanuel Vazquez</h1>
+                <p class="hero-subtitle">
+                    Soy un desarrollador de software apasionado por crear soluciones innovadoras. 
+                    Me especializo en desarrollo web moderno y tecnologías emergentes para construir 
+                    productos que marquen la diferencia.
+                </p>
+                <button class="hero-resume-btn">Perfil</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">Experience</h2>
+        
+        <div class="experience-item">
+            <div class="experience-date">Ene 2024 — Presente</div>
+            <h3 class="experience-title">Desarrollador Full Stack Senior</h3>
+            <div class="experience-company">Tech Company Inc.</div>
+            <p class="experience-description">
+                Lidero el desarrollo de aplicaciones web escalables utilizando React, Node.js y TypeScript. 
+                Colaboro con equipos multidisciplinarios para entregar productos de alta calidad que impactan 
+                a miles de usuarios diariamente.
+            </p>
+        </div>
+
+        <div class="experience-item">
+            <div class="experience-date">Jun 2023 — Dic 2023</div>
+            <h3 class="experience-title">Desarrollador Frontend</h3>
+            <div class="experience-company">Startup Innovadora</div>
+            <p class="experience-description">
+                Desarrollé interfaces de usuario intuitivas y responsivas usando React y Next.js. 
+                Implementé mejoras de rendimiento que redujeron los tiempos de carga en un 40% 
+                y aumentaron la satisfacción del usuario.
+            </p>
+        </div>
+
+        <div class="experience-item">
+            <div class="experience-date">Sep 2022 — May 2023</div>
+            <h3 class="experience-title">Intern Desarrollador</h3>
+            <div class="experience-company">Empresa de Tecnología</div>
+            <p class="experience-description">
+                Apoyé en el desarrollo de aplicaciones móviles y web. Participé activamente en 
+                code reviews, testing y documentación técnica, contribuyendo al crecimiento del 
+                equipo y mis propias habilidades técnicas.
+            </p>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">Skills</h2>
+        <div class="skills-container">
+            <div class="skills-carousel">
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #f7df1e;">JS</div>
+                    <div class="skill-name">JavaScript</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #3178c6;">TS</div>
+                    <div class="skill-name">TypeScript</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #61dafb;">⚛</div>
+                    <div class="skill-name">React</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #000;">N</div>
+                    <div class="skill-name">Next.js</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #38bdf8;">💨</div>
+                    <div class="skill-name">Tailwind</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #3776ab;">Py</div>
+                    <div class="skill-name">Python</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #ed8b00;">☕</div>
+                    <div class="skill-name">Java</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #00758f;">C</div>
+                    <div class="skill-name">C/C++</div>
+                </div>
+                <!-- Duplicamos los elementos para crear el efecto infinito -->
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #f7df1e;">JS</div>
+                    <div class="skill-name">JavaScript</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #3178c6;">TS</div>
+                    <div class="skill-name">TypeScript</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #61dafb;">⚛</div>
+                    <div class="skill-name">React</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #000;">N</div>
+                    <div class="skill-name">Next.js</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #38bdf8;">💨</div>
+                    <div class="skill-name">Tailwind</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #3776ab;">Py</div>
+                    <div class="skill-name">Python</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #ed8b00;">☕</div>
+                    <div class="skill-name">Java</div>
+                </div>
+                <div class="skill-item">
+                    <div class="skill-icon" style="background: #00758f;">C</div>
+                    <div class="skill-name">C/C++</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal para Resume -->
+    <div class="modal-overlay" id="resumeModal">
+        <div class="modal-window">
+            <div class="modal-header">
+                <span>resume</span>
+                <button class="modal-close" id="closeModal">[x]</button>
+            </div>
+            <div class="modal-content">
+                <h2 class="modal-title">Mi Currículum Vitae</h2>
+                <p class="modal-subtitle">
+                    Aquí puedes ver mi experiencia profesional, educación y habilidades técnicas. 
+                    Este documento refleja mi trayectoria como desarrollador y mi pasión por crear 
+                    soluciones tecnológicas innovadoras.
+                </p>
+                
+                <div class="cv-preview">
+                    <img src="cv/cv.png" alt="Mi CV" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+                </div>
+                
+                <div class="download-section">
+                    <button class="download-btn" id="downloadCVEsp">
+                        📥 Descargar CV (Español)
+                    </button>
+                    <button class="download-btn" id="downloadCVEng" style="background: #7c3aed; margin-left: 15px;">
+                        📥 Download CV (English)
+                    </button>
+                </div>
+                
+                <div class="contact-info">
+                    Para más información o consultas profesionales, no dudes en contactarme a través de mi correo: 
+                    <a href="mailto:enema3901@gmail.com" class="contact-email">enema3901@gmail.com</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling animation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth reveal animation to experience items
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Initially hide items (excluding skill items now since they're in carousel)
+            const animateItems = document.querySelectorAll('.experience-item');
+            animateItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(30px)';
+                item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(item);
+            });
+
+            // Theme toggle functionality
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            themeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    themeButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+
+            // Resume modal functionality
+            const resumeButtons = document.querySelectorAll('.resume-btn, .hero-resume-btn');
+            const resumeModal = document.getElementById('resumeModal');
+            const closeModal = document.getElementById('closeModal');
+            const downloadCVEsp = document.getElementById('downloadCVEsp');
+            const downloadCVEng = document.getElementById('downloadCVEng');
+
+            // Open modal
+            resumeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    resumeModal.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                });
+            });
+
+            // Close modal
+            const closeModalFunc = () => {
+                resumeModal.classList.remove('active');
+                document.body.style.overflow = 'auto'; // Restore scrolling
+            };
+
+            closeModal.addEventListener('click', closeModalFunc);
+
+            // Close modal when clicking outside
+            resumeModal.addEventListener('click', (e) => {
+                if (e.target === resumeModal) {
+                    closeModalFunc();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && resumeModal.classList.contains('active')) {
+                    closeModalFunc();
+                }
+            });
+
+            // Download CV functionality
+            downloadCVEsp.addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.href = 'cv/cvEsp.pdf';
+                link.download = 'CV_Español.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+
+            downloadCVEng.addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.href = 'cv/cvEng.pdf';
+                link.download = 'CV_English.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+
+            // Add floating animation to hero section
+            const heroImage = document.querySelector('.profile-image');
+            let floatDirection = 1;
+            
+            setInterval(() => {
+                const currentTransform = heroImage.style.transform || 'translateY(0px)';
+                const currentY = parseFloat(currentTransform.match(/translateY\(([^)]+)px\)/) || [0, 0])[1];
+                const newY = currentY + (floatDirection * 0.5);
+                
+                if (Math.abs(newY) > 10) {
+                    floatDirection *= -1;
+                }
+                
+                heroImage.style.transform = `translateY(${newY}px)`;
+            }, 50);
+        });
+    </script>
+</body>
+</html>
