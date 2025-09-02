@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador QR</title>
+    <link rel="icon" type="image/x-icon" href="img/portafolio.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/proyecto.css">
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <nav class="navbar">
+        <a href="index.html" class="logo">Emanuel Vazquez</a>
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Regresar
+        </a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="project-info">
+                <h1 class="project-title">Generador de QR</h1>
+                
+                <p class="project-description">
+                    Una aplicación de escritorio simple para generar códigos QR personalizados.
+                </p>
+                
+                <div class="project-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Tecnología</span>
+                        <span class="stat-value">Python</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Año</span>
+                        <span class="stat-value">2025</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Estado</span>
+                        <span class="stat-value">Completado</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-image">
+                <img src="img/proyecto1/qrcode.png" alt="QR code" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="hero-placeholder" style="display: none;">[INICIAL_PROYECTO]</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Descripción Detallada -->
+    <section class="content-section fade-in">
+        <h2 class="section-title">Acerca del Proyecto</h2>
+        <section class="content-section fade-in">
+          <h2 class="section-title">📖 Creacion</h2>
+
+        <div class="description-text">
+            <p>
+            Este Generador de Códigos QR nació de la necesidad de crear una herramienta simple, rápida y accesible para generar códigos QR sin depender de servicios online.
+            </p>
+            <p>
+            Muchas veces necesitaba crear códigos QR para compartir enlaces, información de contacto o texto, pero las herramientas web disponibles tenían limitaciones como:
+            </p>
+
+            <ul>
+            <li>🌐 <strong>Dependencia de internet:</strong> Requieren conexión constante</li>
+            <li>🔒 <strong>Privacidad:</strong> Los datos se procesan en servidores externos</li>
+            <li>💰 <strong>Limitaciones gratuitas:</strong> Restricciones de uso o marcas de agua</li>
+            <li>🎨 <strong>Falta de personalización:</strong> Opciones limitadas de configuración</li>
+        </ul>
+        </div>
+
+        <h3 class="section-title">🎯 Objetivos del Proyecto</h3>
+        <div class="description-text">
+            <ul>
+            <li>Generar códigos QR de alta calidad instantáneamente</li>
+            <li>Mantener total privacidad de los datos (procesados localmente)</li>
+            <li>Proporcionar una interfaz intuitiva para usuarios no técnicos</li>
+            <li>Ser completamente portable y ejecutable sin instalaciones complejas</li>
+            </ul>
+        </div>
+
+        <h3 class="section-title">🛠️ Desafíos Enfrentados</h3>
+        <div class="description-text">
+            <p>Durante el desarrollo me encontré con varios retos interesantes:</p>
+            <ul>
+            <li><strong>Interfaz de Usuario Intuitiva:</strong> Tkinter puede verse "anticuado", así que mejoré la experiencia visual con estilos personalizados y distribución lógica.</li>
+            <li><strong>Gestión de Archivos y Rutas:</strong> Sistema robusto que funcionara en distintos SO y validara nombres de archivos.</li>
+            <li><strong>Validación de Entrada:</strong> Flexible con contenido (URLs, texto, emails) pero estricto con nombres de archivos.</li>
+            <li><strong>Experiencia del Usuario:</strong> Confirmaciones antes de sobrescribir, apertura automática de carpeta y mensajes claros.</li>
+            </ul>
+        </div>
+
+        <h3 class="section-title">💡 Lo que Aprendí</h3>
+        <div class="description-text">
+            <ul>
+            <li><strong>Desarrollo de GUI con Python:</strong> Layouts, eventos y UX con Tkinter.</li>
+            <li><strong>Distribución de Software:</strong> Empaquetado con PyInstaller y compatibilidad multiplataforma.</li>
+            <li><strong>Manejo de Librerías Externas:</strong> Integración de <code>qrcode</code>.</li>
+            <li><strong>Pensamiento Centrado en el Usuario:</strong> Casos de uso reales y edge cases.</li>
+            </ul>
+        </div>
+
+        <h3 class="section-title">🚀 Evolución del Proyecto</h3>
+        <div class="description-text">
+            <p>
+            La aplicación comenzó como un script simple de consola y evolucionó hacia una aplicación completa de escritorio. Las mejoras incluyeron:
+            </p>
+            <ul>
+            <li>Interfaz gráfica completa</li>
+            <li>Sistema de logging y feedback visual</li>
+            <li>Gestión inteligente de rutas y archivos</li>
+            <li>Iconografía personalizada</li>
+            <li>Documentación completa</li>
+            </ul>
+            <p>
+            Este proyecto representa mi aprendizaje en el desarrollo de aplicaciones de escritorio prácticas y user-friendly, 
+            combinando funcionalidad técnica con una experiencia de usuario pulida.
+            </p>
+        </div>
+        
+        <div class="tech-stack">
+            <h3 class="section-title" style="font-size: 1.8rem;">Tecnologías Utilizadas</h3>
+            <div class="tech-items">
+                <span class="tech-item">Python</span>
+                <span class="tech-item">Tkinter</span>
+                <span class="tech-item">qrcode (librería)</span>
+                <span class="tech-item">Pillow</span>
+                <span class="tech-item">PyInstaller</span>
+                <!-- Agrega más según necesites -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Imágenes del Proyecto -->
+    <section class="content-section fade-in">
+        <h2 class="section-title">Capturas del Proyecto</h2>
+        <div class="images-grid">
+            <div class="project-image">
+                <img src="img/proyecto1/image1.jpg" alt="Captura 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-placeholder" style="display: none;">Vista 1</div>
+            </div>
+            
+            <div class="project-image">
+                <img src="img/proyecto1/image2.jpg" alt="Captura 2" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-placeholder" style="display: none;">Vista 2</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Botones de Acción -->
+    <section class="content-section fade-in">
+        <div class="action-buttons">
+            <a href="https://github.com/Ema3901/QRcodeGenerator" target="_blank" class="action-btn">
+                <i class="fab fa-github"></i> Ver en GitHub
+            </a>
+            <a href="https://github.com/Ema3901/QRcodeGenerator/releases/download/LANZAMIENTO/GeneradorQR.exe" class="action-btn secondary" download>
+                <i class="fas fa-download"></i> Descargar Ejecutable
+            </a>
+
+        </div>
+    </section>
+
+    <script src="js/proyecto.js"></script>
+</body>
+</html>
