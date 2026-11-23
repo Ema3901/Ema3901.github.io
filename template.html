@@ -4,101 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>[NOMBRE_PROYECTO] - Emanuel Vazquez</title>
+    <meta name="theme-color" content="#33CCBB">
     <link rel="icon" type="image/x-icon" href="img/portafolio.ico">
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme');
+            if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/proyecto.css">
 </head>
 <body>
-    <div class="bg-gradient"></div>
-    
+    <div class="bg-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
     <nav class="navbar">
-        <a href="index.html" class="logo">Emanuel Vazquez</a>
-        <a href="index.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Regresar
-        </a>
+        <a href="index.html" class="logo">ema<span class="accent">@</span>dev:~$</a>
+        <div class="nav-controls">
+            <button class="icon-btn" id="themeToggle" aria-label="Cambiar tema">
+                <i class="fas fa-moon"></i><i class="fas fa-sun"></i>
+            </button>
+            <a href="index.html#proyectos" class="btn ghost"><i class="fas fa-arrow-left"></i> Regresar</a>
+        </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-content">
-            <div class="project-info">
-                <h1 class="project-title">[NOMBRE_PROYECTO]</h1>
-                
-                <p class="project-description">
-                    Una aplicación de escritorio simple y elegante para generar códigos QR personalizados.
-                </p>
-                
-                <div class="project-stats">
-                    <div class="stat-item">
-                        <span class="stat-label">Tecnología</span>
-                        <span class="stat-value">Python</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Año</span>
-                        <span class="stat-value">2025</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Estado</span>
-                        <span class="stat-value">Completado</span>
-                    </div>
+    <!-- Hero -->
+    <section class="p-hero">
+        <div class="p-hero-content">
+            <div>
+                <span class="hero-kicker">~/proyectos/[NUMERO]</span>
+                <h1 class="p-title"><span class="accent">[NOMBRE_PROYECTO]</span></h1>
+                <p class="p-description">[DESCRIPCIÓN_CORTA]</p>
+                <div class="p-stats">
+                    <div class="p-stat"><span class="p-stat-label">Tecnología</span><span class="p-stat-value">[TECNOLOGÍA]</span></div>
+                    <div class="p-stat"><span class="p-stat-label">Año</span><span class="p-stat-value">[AÑO]</span></div>
+                    <div class="p-stat"><span class="p-stat-label">Estado</span><span class="p-stat-value">[ESTADO]</span></div>
                 </div>
             </div>
-            
-            <div class="hero-image">
+
+            <div class="p-hero-image window">
+                <div class="window-bar">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="title">[archivo]</span>
+                </div>
                 <img src="img/[IMAGEN_PRINCIPAL].jpg" alt="[NOMBRE_PROYECTO]" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="hero-placeholder" style="display: none;">[INICIAL_PROYECTO]</div>
+                <div class="p-hero-placeholder">[INICIALES]</div>
             </div>
         </div>
     </section>
 
-    <!-- Descripción Detallada -->
-    <section class="content-section fade-in">
-        <h2 class="section-title">Acerca del Proyecto</h2>
-        <p class="description-text">
-            [DESCRIPCIÓN_DETALLADA] - Aquí puedes explicar más a fondo qué hace tu proyecto, qué problemas resuelve, 
-            cómo se te ocurrió la idea, qué desafíos enfrentaste durante el desarrollo, y qué aprendiste en el proceso. 
-            Esta sección debe dar una visión completa de tu trabajo y mostrar tu proceso de pensamiento como desarrollador.
-        </p>
-        
-        <div class="tech-stack">
-            <h3 class="section-title" style="font-size: 1.8rem;">Tecnologías Utilizadas</h3>
-            <div class="tech-items">
-                <span class="tech-item">[TECNOLOGÍA_1]</span>
-                <span class="tech-item">[TECNOLOGÍA_2]</span>
-                <span class="tech-item">[TECNOLOGÍA_3]</span>
-                <span class="tech-item">[TECNOLOGÍA_4]</span>
-                <!-- Agrega más según necesites -->
-            </div>
+    <!-- Acerca del proyecto: duplica un <article> por cada bloque -->
+    <section class="p-section">
+        <h2 class="section-title reveal"><span class="prompt">&gt;</span>acerca del proyecto</h2>
+        <div class="p-blocks">
+            <article class="p-block window reveal">
+                <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">creacion.md</span></div>
+                <div class="p-block-body">
+                    <h3>Creación</h3>
+                    <p>[DESCRIPCIÓN_DETALLADA]</p>
+                    <ul>
+                        <li><strong>[Punto]:</strong> [Detalle]</li>
+                    </ul>
+                </div>
+            </article>
         </div>
     </section>
 
-    <!-- Imágenes del Proyecto -->
-    <section class="content-section fade-in">
-        <h2 class="section-title">Capturas del Proyecto</h2>
+    <!-- Tecnologías -->
+    <section class="p-section">
+        <h2 class="section-title reveal"><span class="prompt">&gt;</span>tecnologías</h2>
+        <div class="tech-items reveal">
+            <span class="tech-item">[TECNOLOGÍA_1]</span>
+            <span class="tech-item">[TECNOLOGÍA_2]</span>
+            <span class="tech-item">[TECNOLOGÍA_3]</span>
+        </div>
+    </section>
+
+    <!-- Capturas -->
+    <section class="p-section">
+        <h2 class="section-title reveal"><span class="prompt">&gt;</span>capturas</h2>
         <div class="images-grid">
-            <div class="project-image">
-                <img src="img/[IMAGEN_1].jpg" alt="Captura 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="image-placeholder" style="display: none;">Vista 1</div>
+            <div class="shot window reveal">
+                <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">vista_1.jpg</span></div>
+                <img src="img/[IMAGEN_1].jpg" alt="Captura 1" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-placeholder">Vista 1</div>
             </div>
-            
-            <div class="project-image">
-                <img src="img/[IMAGEN_2].jpg" alt="Captura 2" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="image-placeholder" style="display: none;">Vista 2</div>
+            <div class="shot window reveal">
+                <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">vista_2.jpg</span></div>
+                <img src="img/[IMAGEN_2].jpg" alt="Captura 2" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-placeholder">Vista 2</div>
             </div>
         </div>
     </section>
 
-    <!-- Botones de Acción -->
-    <section class="content-section fade-in">
-        <div class="action-buttons">
-            <a href="[LINK_GITHUB]" target="_blank" class="action-btn">
+    <!-- Acciones -->
+    <section class="p-section">
+        <div class="action-buttons reveal">
+            <a href="[LINK_GITHUB]" target="_blank" rel="noopener" class="btn">
                 <i class="fab fa-github"></i> Ver en GitHub
             </a>
-            <a href="[LINK_DESCARGA]" class="action-btn secondary" download>
-                <i class="fas fa-download"></i> Descargar Ejecutable
+            <a href="[LINK_DESCARGA]" class="btn yellow" download>
+                <i class="fas fa-download"></i> Descargar
             </a>
         </div>
     </section>
+
+    <footer class="footer">
+        Emanuel Vazquez &middot; Reynosa, México &middot; <span id="year"></span>
+    </footer>
 
     <script src="js/proyecto.js"></script>
 </body>

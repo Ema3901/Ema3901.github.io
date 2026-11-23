@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Emanuel Vazquez</title>
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#33CCBB">
+    <!-- Rutas absolutas: GitHub Pages sirve esta página en CUALQUIER ruta inexistente -->
+    <link rel="icon" type="image/x-icon" href="/img/portafolio.ico">
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme');
+            if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <style>
+        .e404 {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 110px 20px 40px;
+        }
+
+        .e404-wrap {
+            width: 100%;
+            max-width: 880px;
+        }
+
+        .stage {
+            position: relative;
+            height: min(56vh, 480px);
+            min-height: 300px;
+            background: #9FE3DA;
+            overflow: hidden;
+            cursor: grab;
+            touch-action: pan-y;
+        }
+
+        .stage:active {
+            cursor: grabbing;
+        }
+
+        /* El canvas se renderiza a baja resolución y se escala sin suavizado */
+        .stage canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        /* Scanlines CRT + viñeta */
+        .stage::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.12) 0 1px, transparent 1px 3px),
+                radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.28) 100%);
+            mix-blend-mode: multiply;
+        }
+
+        .stage-hint {
+            position: absolute;
+            left: 12px;
+            bottom: 10px;
+            z-index: 2;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #0F2F2B;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            padding: 2px 8px;
+            pointer-events: none;
+        }
+
+        /* Respaldo si no hay WebGL o no carga el CDN */
+        .fallback {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: clamp(5rem, 18vw, 10rem);
+            color: #1F2328;
+            text-shadow: 6px 6px 0 #FFD166;
+            letter-spacing: 0.05em;
+        }
+
+        .stage.ready .fallback {
+            display: none;
+        }
+
+        .term {
+            padding: 22px 24px 24px;
+            font-family: var(--font-mono);
+            font-size: 0.92rem;
+            line-height: 1.9;
+            border-top: 2px solid var(--border);
+        }
+
+        .term .p { color: var(--accent-ink); font-weight: 700; }
+        .term .err { color: #E5484D; }
+        [data-theme="dark"] .term .err { color: #FF8589; }
+        .term .path { color: var(--ink); word-break: break-all; }
+
+        .term .cursor {
+            display: inline-block;
+            width: 0.6em;
+            height: 1.1em;
+            vertical-align: -0.15em;
+            background: var(--accent);
+            animation: blink 1s steps(1) infinite;
+        }
+
+        .term h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 3.5vw, 2rem);
+            color: var(--ink);
+            margin: 14px 0 4px;
+            line-height: 1.2;
+        }
+
+        .term .msg {
+            font-family: var(--font-body);
+            color: var(--text);
+            margin-bottom: 18px;
+        }
+
+        .term .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <nav class="navbar">
+        <a href="/" class="logo">ema<span class="accent">@</span>dev:~$</a>
+        <div class="nav-controls">
+            <button class="icon-btn" id="themeToggle" aria-label="Cambiar tema">
+                <i class="fas fa-moon"></i><i class="fas fa-sun"></i>
+            </button>
+            <a href="/" class="btn ghost"><i class="fas fa-house"></i> Inicio</a>
+        </div>
+    </nav>
+
+    <main class="e404">
+        <div class="e404-wrap window">
+            <div class="window-bar yellow">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="title">error_404.exe</span>
+            </div>
+
+            <div class="stage" id="stage" aria-label="Letrero 3D low-poly con el texto 404">
+                <div class="fallback" aria-hidden="true">404</div>
+                <span class="stage-hint">arrastra para girar</span>
+            </div>
+
+            <div class="term">
+                <div><span class="p">ema@dev:~$</span> cd <span class="path" id="badPath">/</span></div>
+                <div class="err">bash: cd: <span id="badPath2">/</span>: No such file or directory</div>
+                <h1>Esta página no existe</h1>
+                <p class="msg">Puede que el enlace esté mal escrito o que la página se haya movido. Mejor regresa al inicio.</p>
+                <div class="actions">
+                    <a href="/" class="btn"><i class="fas fa-house"></i> Volver al inicio</a>
+                    <a href="/#proyectos" class="btn ghost"><i class="fas fa-folder-open"></i> Ver proyectos</a>
+                </div>
+                <div style="margin-top: 16px;"><span class="p">ema@dev:~$</span> <span class="cursor" aria-hidden="true"></span></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Muestra la ruta que se intentó abrir
+        (function () {
+            var p = decodeURIComponent(location.pathname || '/');
+            document.getElementById('badPath').textContent = p;
+            document.getElementById('badPath2').textContent = p;
+        })();
+    </script>
+    <script src="/js/proyecto.js"></script>
+
+    <script type="importmap">
+        { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+
+        const stage = document.getElementById('stage');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // ---------- Utilidades ----------
+        // Aleatorio con semilla: las texturas salen iguales en cada carga
+        let seed = 404;
+        const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+        const makeCanvas = (w, h) => {
+            const c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            return [c, c.getContext('2d')];
+        };
+
+        const px = (ctx, x, y, color) => { ctx.fillStyle = color; ctx.fillRect(x, y, 1, 1); };
+
+        // Ruido + iluminación "horneada" (más claro arriba, más oscuro abajo, en bandas)
+        const bake = (ctx, w, h, { noise = 0.08, shade = 0.22, bands = 5 } = {}) => {
+            for (let y = 0; y < h; y++) {
+                const band = Math.floor((y / h) * bands) / bands;
+                ctx.fillStyle = `rgba(0,0,0,${(band * shade).toFixed(3)})`;
+                ctx.fillRect(0, y, w, 1);
+            }
+            for (let i = 0; i < w * h * 0.25; i++) {
+                const x = Math.floor(rand() * w), y = Math.floor(rand() * h);
+                ctx.fillStyle = rand() > 0.5 ? `rgba(255,255,255,${noise})` : `rgba(0,0,0,${noise})`;
+                ctx.fillRect(x, y, 1, 1);
+            }
+        };
+
+        const toTexture = (canvas) => {
+            const t = new THREE.CanvasTexture(canvas);
+            t.magFilter = THREE.NearestFilter;   // sin filtrado: pixeles nítidos
+            t.minFilter = THREE.NearestFilter;
+            t.generateMipmaps = false;
+            t.colorSpace = THREE.SRGBColorSpace;
+            return t;
+        };
+
+        // ---------- Texturas pixel art ----------
+        const DARK = '#1F2328';
+
+        function signFaceTexture() {
+            const W = 64, H = 40;
+            const [c, ctx] = makeCanvas(W, H);
+
+            ctx.fillStyle = DARK; ctx.fillRect(0, 0, W, H);
+            ctx.fillStyle = '#FFC94A'; ctx.fillRect(1, 1, W - 2, H - 2);
+
+            // Franjas de advertencia arriba y abajo
+            for (const y0 of [3, 32]) {
+                for (let y = y0; y < y0 + 5; y++) {
+                    for (let x = 3; x < W - 3; x++) {
+                        px(ctx, x, y, ((x + y) >> 2) & 1 ? DARK : '#FFC94A');
+                    }
+                }
+            }
+
+            // Panel central
+            ctx.fillStyle = DARK; ctx.fillRect(3, 9, W - 6, 22);
+            ctx.fillStyle = '#FFD877'; ctx.fillRect(4, 10, W - 8, 20);
+
+            // Tornillos
+            for (const [x, y] of [[2, 20], [W - 3, 20]]) px(ctx, x, y, '#6B7178');
+
+            // Texto "404" con fuente pixel 5x7, escala 2
+            const glyphs = {
+                '4': ['00010', '00110', '01010', '10010', '11111', '00010', '00010'],
+                '0': ['01110', '10001', '10011', '10101', '11001', '10001', '01110']
+            };
+            const S = 2;
+            let gx = 21;
+            for (const ch of '404') {
+                glyphs[ch].forEach((row, ry) => {
+                    [...row].forEach((bit, rx) => {
+                        if (bit === '1') { ctx.fillStyle = DARK; ctx.fillRect(gx + rx * S, 13 + ry * S, S, S); }
+                    });
+                });
+                gx += 5 * S + 2;
+            }
+
+            // Iconito de error (ventana con una X)
+            const icon = [
+                'ooooooooo',
+                'ottttttpo',
+                'ooooooooo',
+                'owwpwpwwo',
+                'owwwpwwwo',
+                'owwpwpwwo',
+                'owwwwwwwo',
+                'ooooooooo'
+            ];
+            const pal = { o: DARK, t: '#33CCBB', p: '#FF9EB5', w: '#FFFFFF' };
+            icon.forEach((row, y) => [...row].forEach((k, x) => px(ctx, 8 + x, 16 + y, pal[k])));
+
+            bake(ctx, W, H, { noise: 0.06, shade: 0.18, bands: 4 });
+            return toTexture(c);
+        }
+
+        function metalTexture(w, h, base = '#8A9098') {
+            const [c, ctx] = makeCanvas(w, h);
+            ctx.fillStyle = base; ctx.fillRect(0, 0, w, h);
+            // Brillo vertical y sombra (metal cilíndrico)
+            ctx.fillStyle = 'rgba(255,255,255,0.25)'; ctx.fillRect(Math.floor(w * 0.25), 0, Math.max(1, Math.floor(w * 0.2)), h);
+            ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.fillRect(Math.floor(w * 0.75), 0, Math.max(1, Math.floor(w * 0.25)), h);
+            // Uniones y algo de óxido
+            for (let y = 6; y < h; y += 10) { ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(0, y, w, 1); }
+            for (let i = 0; i < 6; i++) px(ctx, Math.floor(rand() * w), Math.floor(rand() * h), '#9A5B3A');
+            bake(ctx, w, h, { noise: 0.08, shade: 0.15, bands: 3 });
+            return toTexture(c);
+        }
+
+        function concreteTexture() {
+            const W = 16, H = 16;
+            const [c, ctx] = makeCanvas(W, H);
+            ctx.fillStyle = '#A8A399'; ctx.fillRect(0, 0, W, H);
+            for (let i = 0; i < 40; i++) px(ctx, Math.floor(rand() * W), Math.floor(rand() * H), rand() > 0.5 ? '#8F8A80' : '#BDB8AE');
+            ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.fillRect(0, H - 3, W, 3);
+            bake(ctx, W, H, { noise: 0.05, shade: 0.12, bands: 3 });
+            return toTexture(c);
+        }
+
+        // Cielo: degradado en pocas bandas (banding retro intencional)
+        function skyTexture(dark) {
+            const steps = 14;
+            const [c, ctx] = makeCanvas(1, steps);
+            const top = dark ? [11, 30, 42] : [126, 214, 204];
+            const bot = dark ? [33, 78, 82] : [255, 246, 224];
+            for (let i = 0; i < steps; i++) {
+                const t = i / (steps - 1);
+                const col = top.map((v, k) => Math.round(v + (bot[k] - v) * t));
+                ctx.fillStyle = `rgb(${col})`; ctx.fillRect(0, i, 1, 1);
+            }
+            return toTexture(c);
+        }
+
+        // ---------- Escena ----------
+        let renderer;
+        try {
+            renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'low-power' });
+        } catch (e) {
+            throw new Error('WebGL no disponible');   // queda visible el respaldo
+        }
+        renderer.setPixelRatio(1);
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        stage.prepend(renderer.domElement);
+
+        const scene = new THREE.Scene();
+        const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
+        scene.background = skyTexture(isDark());
+
+        const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50);
+        camera.position.set(0, 0.35, 7);
+        camera.lookAt(0, 0.1, 0);
+
+        scene.add(new THREE.HemisphereLight(0xfff6e0, 0x4a5a5a, 1.6));
+        const sun = new THREE.DirectionalLight(0xffffff, 1.4);
+        sun.position.set(3, 5, 4);
+        scene.add(sun);
+
+        const lambert = (map, extra = {}) => new THREE.MeshLambertMaterial({ map, flatShading: true, ...extra });
+
+        // Aristas visibles de los polígonos
+        const withEdges = (mesh, opacity = 0.35) => {
+            const edges = new THREE.LineSegments(
+                new THREE.EdgesGeometry(mesh.geometry, 1),
+                new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity })
+            );
+            mesh.add(edges);
+            return mesh;
+        };
+
+        const asset = new THREE.Group();
+        scene.add(asset);
+
+        // Base de concreto (octágono)
+        const concrete = concreteTexture();
+        const base = withEdges(new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.55, 0.38, 8), lambert(concrete)));
+        base.position.y = 0.19;
+        asset.add(base);
+
+        // Poste (hexagonal)
+        const postTex = metalTexture(8, 32);
+        const post = withEdges(new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.1, 3.1, 6), lambert(postTex)), 0.25);
+        post.position.y = 0.38 + 1.55;
+        asset.add(post);
+
+        const cap = withEdges(new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.08, 6), lambert(postTex)));
+        cap.position.y = 0.38 + 3.1 + 0.04;
+        asset.add(cap);
+
+        // Letrero
+        const backTex = metalTexture(32, 20, '#7C838C');
+        const sideMat = lambert(null, { color: 0x3a3f45 });
+        const signMats = [sideMat, sideMat, sideMat, sideMat, lambert(signFaceTexture()), lambert(backTex)];
+        const sign = withEdges(new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.5, 0.1), signMats), 0.5);
+        sign.position.set(0, 2.75, 0.16);
+        asset.add(sign);
+
+        // Abrazaderas
+        for (const y of [2.3, 3.2]) {
+            const clamp = withEdges(new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.09, 0.14), lambert(postTex)));
+            clamp.position.set(0, y, 0.06);
+            asset.add(clamp);
+        }
+
+        // Sombra "blob" típica de juegos de PS2
+        const shadow = new THREE.Mesh(
+            new THREE.CircleGeometry(0.95, 8),
+            new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22, depthWrite: false })
+        );
+        shadow.rotation.x = -Math.PI / 2;
+        shadow.position.y = 0.005;
+        asset.add(shadow);
+
+        asset.position.y = -1.9;
+
+        // Cambia el cielo con el tema
+        new MutationObserver(() => {
+            scene.background.dispose();
+            scene.background = skyTexture(isDark());
+            needsRender = true;
+        }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+        // ---------- Resolución baja (look PS2) ----------
+        const PIXEL = 3;   // cada pixel del render = 3x3 pixeles en pantalla
+        let needsRender = true;
+        const resize = () => {
+            const w = stage.clientWidth, h = stage.clientHeight;
+            renderer.setSize(Math.max(1, Math.ceil(w / PIXEL)), Math.max(1, Math.ceil(h / PIXEL)), false);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            needsRender = true;
+        };
+        new ResizeObserver(resize).observe(stage);
+        resize();
+
+        // ---------- Interacción: arrastrar para girar ----------
+        let userYaw = 0, dragging = false, lastX = 0;
+        stage.addEventListener('pointerdown', (e) => { dragging = true; lastX = e.clientX; stage.setPointerCapture(e.pointerId); });
+        stage.addEventListener('pointermove', (e) => {
+            if (!dragging) return;
+            userYaw += (e.clientX - lastX) * 0.012;
+            lastX = e.clientX;
+            needsRender = true;
+        });
+        const stop = () => { dragging = false; };
+        stage.addEventListener('pointerup', stop);
+        stage.addEventListener('pointercancel', stop);
+
+        // ---------- Loop a ~30 fps ----------
+        const clock = new THREE.Clock();
+        let acc = 0;
+        const FRAME = 1 / 30;
+        const loop = () => {
+            requestAnimationFrame(loop);
+            acc += clock.getDelta();
+            if (acc < FRAME) return;
+            const t = clock.elapsedTime;
+            acc = 0;
+
+            if (!dragging) userYaw *= 0.96;   // regresa suavemente a su vaivén
+            const sway = reduceMotion ? 0 : Math.sin(t * 0.5) * 0.4;
+            asset.rotation.y = -0.35 + sway + userYaw;
+
+            if (!reduceMotion || dragging || needsRender || Math.abs(userYaw) > 0.001) {
+                renderer.render(scene, camera);
+                needsRender = false;
+            }
+        };
+        loop();
+
+        stage.classList.add('ready');
+    </script>
+</body>
+</html>

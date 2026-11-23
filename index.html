@@ -4,382 +4,435 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emanuel Vazquez - Portafolio</title>
+    <meta name="description" content="Emanuel Vazquez, desarrollador autodidacta en camino a ser ingeniero de LLMs y Machine Learning. Python, C#, .NET y WebAssembly.">
+    <meta name="theme-color" content="#33CCBB">
     <link rel="icon" type="image/x-icon" href="img/portafolio.ico">
+    <script>
+        // Aplica el tema guardado antes de pintar la página (evita parpadeo)
+        (function () {
+            var t = localStorage.getItem('theme');
+            if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="css/index.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-    <div class="bg-gradient"></div>
-    
+    <div class="bg-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
     <nav class="navbar">
-        <div class="logo">Emanuel Vazquez</div>
+        <a href="#inicio" class="logo">ema<span class="accent">@</span>dev:~$</a>
+        <ul class="nav-links">
+            <li><a href="#whoami">whoami</a></li>
+            <li><a href="#experiencia">experiencia</a></li>
+            <li><a href="#proyectos">proyectos</a></li>
+            <li><a href="#stack">stack</a></li>
+        </ul>
         <div class="nav-controls">
-            <button class="resume-btn">Contacto</button>
+            <button class="icon-btn" id="themeToggle" aria-label="Cambiar tema">
+                <i class="fas fa-moon"></i><i class="fas fa-sun"></i>
+            </button>
+            <button class="btn open-contact">Contacto</button>
         </div>
     </nav>
 
-    <section class="hero">
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="inicio">
         <div class="hero-content">
-            <div class="profile-image">
-                <img src="img/yo.jpg" alt="Emanuel Vazquez" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="profile-placeholder" style="display: none;">EV</div>
+            <div class="profile-wrap">
+                <span class="sparkle sp1" aria-hidden="true">&#10022;</span>
+                <span class="sparkle sp2" aria-hidden="true">&#10022;</span>
+                <span class="sparkle sp3" aria-hidden="true">&#10022;</span>
+                <span class="sticker">IA &amp; diseño</span>
+                <div class="window">
+                    <div class="window-bar">
+                        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                        <span class="title">yo.jpg</span>
+                    </div>
+                    <div class="profile-image">
+                        <img src="img/yo.jpg" alt="Ilustración de Emanuel Vazquez" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="profile-placeholder" style="display: none;">EV</div>
+                    </div>
+                </div>
             </div>
+
             <div class="hero-text">
-                <h1 class="hero-title">Emanuel Vazquez</h1>
-                <p class="hero-subtitle">
-                    Soy un desarrollador de software que busca crear soluciones a los problemas usando diseños intuitivos y practicos.
-                    Me enfoco actualemente al desarrollo de paginas web aunque tengo con anterioridad conocimientos de machine learning e IA.
+                <span class="hero-kicker"><span class="status"></span>system online &mdash; welcome_</span>
+                <h1 class="hero-title">Hola, soy <span class="accent">Emanuel</span></h1>
+                <p class="hero-typing" aria-label="Desarrollador autodidacta. Aspirante a LLM y ML Engineer.">
+                    <span class="prompt">&gt;</span><span id="typing">Desarrollador autodidacta</span><span class="cursor" aria-hidden="true"></span>
                 </p>
                 <p class="hero-subtitle">
-                    Busco fortalecer todas mis habilidades trabajando mano a mano con diversas empresas aprendiendo nuevas tecnologias por el camino.
+                    Estudio <strong>Ingeniería en Desarrollo de Software Multiplataforma</strong> en la UTTN, en Reynosa, México. Estoy construyendo mi camino hacia la
+                    <strong>ingeniería de IA</strong>: entender cómo funcionan el Machine Learning y los Large Language Models,
+                    y crear proyectos reales con ellos en <strong>Python</strong>.
                 </p>
-                <button class="hero-resume-btn">Contacto</button>
+                <p class="hero-subtitle">
+                    Mientras tanto, mantengo bases sólidas de software con <strong>C#, .NET y WebAssembly</strong>.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn open-contact"><i class="fas fa-paper-plane"></i> Hablemos</button>
+                    <a href="#proyectos" class="btn ghost"><i class="fas fa-folder-open"></i> Ver proyectos</a>
+                    <div class="hero-socials">
+                        <a class="icon-btn" href="https://github.com/Ema3901" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a class="icon-btn" href="https://www.linkedin.com/in/ema-vazquez/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a class="icon-btn" href="https://www.instagram.com/ema_pangolin/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="section">
-        <h2 class="section-title">Experiencia</h2>
-        
-        <div class="experience-item">
-            <div class="experience-date">May 2025 — Ago 2025</div>
-            <h3 class="experience-title">Desarrollador Frontend</h3>
-            <div class="experience-company">Laboratorios de Mecatronica - UTTN</div>
-            <p class="experience-description">
-                Desarrollador frontend en la creacion de sistema de inventarios junto a su planeacion. Se redujo hasta un 20% los tiempos de trabajo 
-                como tambien se implemento varios sistemas automatizados.
-            </p>
-        </div>
+    <!-- ================= WHOAMI ================= -->
+    <section class="section" id="whoami">
+        <h2 class="section-title reveal"><span class="prompt">&gt;</span>whoami</h2>
+        <p class="section-subtitle reveal">// un poco más sobre mí</p>
 
-        <div class="experience-item">
-            <div class="experience-date">Sep 2024 — Dic 2024</div>
-            <h3 class="experience-title">Desarrollador Principal</h3>
-            <div class="experience-company">CalzadoJJ</div>
-            <p class="experience-description">
-                Desarrollé interfaces de usuario intuitivas y responsivas usando tecnologías modernas. 
-                Implementé un catalogo como tambien asi una vista administrativa para el sistema de ventas e inventario.
-            </p>
-        </div>
+        <div class="bento">
+            <article class="window reveal">
+                <div class="window-bar">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="title">whoami.md</span>
+                </div>
+                <div class="bento-body">
+                    <p>
+                        Me llamo Emanuel, pero me dicen <strong>Ema</strong>. Aprendí a programar por mi cuenta y hoy mi
+                        enfoque principal está en <strong>LLMs, Machine Learning e IA</strong>.
+                    </p>
+                    <p>
+                        Me gusta entender cómo funcionan las cosas por dentro antes de usarlas, y llevar lo que aprendo
+                        a proyectos reales. Mi lenguaje principal es <strong>Python</strong>, aunque también trabajo con <strong>C#</strong>.
+                    </p>
+                    <ul class="about-facts">
+                        <li><i class="fas fa-location-dot"></i> Reynosa, Tamaulipas, México</li>
+                        <li><i class="fas fa-building"></i> Practicante de desarrollo en Corning</li>
+                        <li><i class="fas fa-graduation-cap"></i> Ingeniería &middot; UTTN (9no cuatrimestre)</li>
+                    </ul>
+                </div>
+            </article>
 
-        <div class="experience-item">
-            <div class="experience-date">2023 — Actualidad</div>
-            <h3 class="experience-title">Estudiante de Ingeniería</h3>
-            <div class="experience-company">Universidad Tecnológica de Tamaulipas Norte</div>
-            <p class="experience-description">
-                Formación académica en Desarrollo de Software Multiplataforma. Participo activamente en 
-                proyectos de desarrollo y adquiero experiencia práctica en múltiples tecnologías.
-            </p>
+            <article class="window reveal">
+                <div class="window-bar yellow">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="title">about.yml</span>
+                </div>
+                <div class="bento-body">
+                    <dl class="kv">
+                        <dt><i class="fas fa-crosshairs"></i>focus</dt>
+                        <dd class="chips">
+                            <span class="chip accent">LLMs</span>
+                            <span class="chip accent">Machine Learning</span>
+                            <span class="chip accent">AI</span>
+                        </dd>
+
+                        <dt><i class="fas fa-compass"></i>exploring</dt>
+                        <dd class="chips">
+                            <span class="chip">Deep Learning</span>
+                            <span class="chip">Computer Vision</span>
+                            <span class="chip">LLM applications</span>
+                        </dd>
+
+                        <dt><i class="fas fa-code"></i>main_lang</dt>
+                        <dd class="chips">
+                            <span class="chip yellow">Python</span>
+                            <span class="chip">C#</span>
+                        </dd>
+
+                        <dt><i class="fas fa-music"></i>music</dt>
+                        <dd class="chips">
+                            <span class="chip pink">Bajo</span>
+                            <span class="chip">lofi</span>
+                            <span class="chip">jazz</span>
+                            <span class="chip">soft music</span>
+                        </dd>
+
+                        <dt><i class="fas fa-heart"></i>loves</dt>
+                        <dd class="chips">
+                            <span class="chip lilac">NewJeans</span>
+                            <span class="chip accent">Hatsune Miku</span>
+                        </dd>
+
+                        <dt><i class="fas fa-cake-candles"></i>birthday</dt>
+                        <dd class="chips">
+                            <span class="chip pink">1 de marzo</span>
+                        </dd>
+                    </dl>
+                </div>
+            </article>
+
+            <article class="window bento-full reveal">
+                <div class="window-bar pink">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="title">languages.json</span>
+                </div>
+                <div class="bento-body">
+                    <div class="lang-list horizontal">
+                        <div class="lang-row">
+                            <span class="name">Español</span>
+                            <div class="bar"><span style="--w: 100%;"></span></div>
+                            <span class="level">nativo</span>
+                        </div>
+                        <div class="lang-row">
+                            <span class="name">Inglés</span>
+                            <div class="bar yellow"><span style="--w: 72%;"></span></div>
+                            <span class="level">B2</span>
+                        </div>
+                        <div class="lang-row">
+                            <span class="name">Japonés</span>
+                            <div class="bar pink"><span style="--w: 18%;"></span></div>
+                            <span class="level">aprendiendo</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
         </div>
     </section>
 
-    <section class="section">
-        <h2 class="section-title">Proyectos</h2>
+    <!-- ================= EXPERIENCIA ================= -->
+    <section class="section" id="experiencia">
+        <h2 class="section-title reveal"><span class="prompt">&gt;</span>experiencia</h2>
+        <p class="section-subtitle reveal">// donde he trabajado y aprendido</p>
+
+        <div class="timeline">
+            <div class="experience-item current reveal">
+                <div class="experience-head">
+                    <span class="experience-date">Jun 2026 — Actualidad</span>
+                    <span class="badge-now">ahora</span>
+                </div>
+                <h3 class="experience-title">Practicante de Desarrollo de Software</h3>
+                <div class="experience-company">Corning Incorporated</div>
+                <p class="experience-description">
+                    Desarrollo de la aplicación principal de la planta, enfocada en automatizar procesos operativos como
+                    importación y exportación de datos y asignación de colaboradores. Actualmente integro IA para mejorar
+                    la lógica y el apoyo a la toma de decisiones dentro de la app.
+                </p>
+            </div>
+
+            <div class="experience-item current reveal">
+                <div class="experience-head">
+                    <span class="experience-date">2023 — Actualidad</span>
+                    <span class="badge-now">ahora</span>
+                </div>
+                <h3 class="experience-title">Estudiante de Ingeniería</h3>
+                <div class="experience-company">Universidad Tecnológica de Tamaulipas Norte</div>
+                <p class="experience-description">
+                    Ingeniería en Desarrollo de Software Multiplataforma (titulación esperada en agosto de 2027), después del
+                    TSU en Tecnologías de la Información, área Desarrollo de Software Multiplataforma. Participo en proyectos de desarrollo y, por mi
+                    cuenta, profundizo en Machine Learning y modelos de lenguaje con Python.
+                </p>
+            </div>
+
+            <div class="experience-item reveal">
+                <div class="experience-head">
+                    <span class="experience-date">May 2025 — Ago 2025</span>
+                </div>
+                <h3 class="experience-title">Desarrollador Frontend</h3>
+                <div class="experience-company">Laboratorios de Mecatrónica - UTTN</div>
+                <p class="experience-description">
+                    Desarrollo del frontend de un sistema de inventarios, incluyendo su planeación. Se redujeron hasta un 20% los
+                    tiempos de trabajo y se implementaron procesos automatizados, como la exportación de reportes a Excel.
+                </p>
+            </div>
+
+            <div class="experience-item reveal">
+                <div class="experience-head">
+                    <span class="experience-date">Sep 2024 — Dic 2024</span>
+                </div>
+                <h3 class="experience-title">Desarrollador Principal</h3>
+                <div class="experience-company">CalzadoJJ</div>
+                <p class="experience-description">
+                    Desarrollé interfaces de usuario intuitivas y responsivas. Implementé un catálogo y una vista
+                    administrativa para el sistema de ventas e inventario.
+                </p>
+            </div>
+
+            <div class="experience-item reveal">
+                <div class="experience-head">
+                    <span class="experience-date">2020 — 2023</span>
+                </div>
+                <h3 class="experience-title">Bachillerato Técnico en Programación</h3>
+                <div class="experience-company">Instituto Tamaulipeco de Capacitación para el Empleo</div>
+                <p class="experience-description">
+                    Donde empecé a programar y descubrí que quería dedicarme al desarrollo de software.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= PROYECTOS ================= -->
+    <section class="section" id="proyectos">
+        <h2 class="section-title reveal"><span class="prompt">&gt;</span>proyectos</h2>
+        <p class="section-subtitle reveal">// cosas que he construido</p>
+
         <div class="projects-grid">
-            <div class="project-card" onclick="window.location.href='proyecto1.html'">
+            <a class="project-card reveal" href="proyecto1.html">
+                <div class="window-bar">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="title">generador_qr.exe</span>
+                </div>
                 <div class="project-image">
-                    <img src="img/proyecto1/qrcode.png" alt="QRcode" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="project-placeholder" style="background: linear-gradient(135deg, #ff006e 0%, #8338ec 100%); font-style: italic; font-size: 2rem;">Proyecto 1</div>
+                    <img src="img/proyecto1/qrcode.png" alt="Generador de códigos QR" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="project-placeholder">QR</div>
                 </div>
                 <div class="project-content">
-                    <h3 class="project-title">Generador de codigos QR</h3>
-                    <p class="project-description">Una aplicación de escritorio simple para generar códigos QR personalizados.</p>
+                    <h3 class="project-title">Generador de códigos QR</h3>
+                    <p class="project-description">Aplicación de escritorio simple para generar códigos QR personalizados.</p>
+                    <div class="project-tags"><span>Python</span><span>Tkinter</span><span>2025</span></div>
+                    <span class="project-link">ver proyecto <i class="fas fa-arrow-right"></i></span>
                 </div>
-            </div>
+            </a>
 
-            <div class="project-card" onclick="window.location.href='proyecto2.html'">
+            <a class="project-card reveal" href="proyecto2.html">
+                <div class="window-bar">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="title">calzadojj.net</span>
+                </div>
                 <div class="project-image">
-                    <img src="img/proyecto2/logo.jpg" alt="CalzadoJJ" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="project-placeholder" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); color: #333; font-family: monospace;">CalzadoJJ</div>
+                    <img src="img/proyecto2/logo.jpg" alt="CalzadoJJ" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="project-placeholder">CalzadoJJ</div>
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">CalzadoJJ</h3>
-                    <p class="project-description">Una aplicacion web para catalogo y venta de zapatos.</p>
+                    <p class="project-description">Aplicación web para catálogo, venta e inventario de una zapatería.</p>
+                    <div class="project-tags"><span>JavaScript</span><span>MySQL</span><span>2024</span></div>
+                    <span class="project-link">ver proyecto <i class="fas fa-arrow-right"></i></span>
                 </div>
-            </div>
+            </a>
 
-            <div class="project-card" onclick="window.location.href='proyecto3.html'">
+            <a class="project-card reveal" href="proyecto3.html">
+                <div class="window-bar">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="title">utts.apk</span>
+                </div>
                 <div class="project-image">
-                    <img src="img/proyecto3/thumbnail.png" alt="UTTS" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="project-placeholder" style="background: linear-gradient(135deg, #ff8500 0%, #ff6b00 100%);">🧱<br>Proyecto 3</div>
+                    <img src="img/proyecto3/thumbnail.png" alt="UTTS" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="project-placeholder">UTTS</div>
                 </div>
                 <div class="project-content">
                     <h3 class="project-title">UTTS</h3>
                     <p class="project-description">App de compra y venta para los estudiantes de la UTTN.</p>
+                    <div class="project-tags"><span>Cordova</span><span>ASP.NET</span><span>2025</span></div>
+                    <span class="project-link">ver proyecto <i class="fas fa-arrow-right"></i></span>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
 
+    <!-- ================= STACK ================= -->
+    <section class="section" id="stack">
+        <h2 class="section-title reveal"><span class="prompt">&gt;</span>stack</h2>
+        <p class="section-subtitle reveal">// herramientas con las que trabajo (pasa el mouse para pausar)</p>
+
+        <div class="reveal">
+            <!-- Cada fila se duplica automáticamente desde js/index.js para el efecto infinito -->
+            <div class="marquee">
+                <div class="marquee-track">
+                    <div class="skill-item"><div class="skill-icon" style="background:#3776ab;"><i class="fab fa-python"></i></div><div class="skill-name">Python</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#68217a;"><i class="fas fa-hashtag"></i></div><div class="skill-name">C#</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#512bd4;"><i class="fas fa-layer-group"></i></div><div class="skill-name">.NET</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#654ff0;"><i class="fas fa-cube"></i></div><div class="skill-name">WebAssembly</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#f7df1e; color:#222;"><i class="fab fa-js"></i></div><div class="skill-name">JavaScript</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#e34f26;"><i class="fab fa-html5"></i></div><div class="skill-name">HTML5</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#1572b6;"><i class="fab fa-css3-alt"></i></div><div class="skill-name">CSS3</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#00758f;"><i class="fas fa-database"></i></div><div class="skill-name">MySQL</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#f05032;"><i class="fab fa-git-alt"></i></div><div class="skill-name">Git</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#111;"><i class="fas fa-note-sticky"></i></div><div class="skill-name">Notion</div></div>
+                </div>
+            </div>
+
+            <div class="marquee reverse">
+                <div class="marquee-track">
+                    <div class="skill-item"><div class="skill-icon" style="background:#33CCBB; color:#0F2F2B;"><i class="fas fa-chart-line"></i></div><div class="skill-name">Machine Learning</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#ee4c2c;"><i class="fas fa-brain"></i></div><div class="skill-name">Deep Learning</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#10a37f;"><i class="fas fa-robot"></i></div><div class="skill-name">LLMs</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#5c3ee8;"><i class="fas fa-eye"></i></div><div class="skill-name">Computer Vision</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#3178c6;"><i class="fas fa-code"></i></div><div class="skill-name">TypeScript</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#00599c;"><i class="fas fa-plus"></i></div><div class="skill-name">C++</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#7f52ff;"><i class="fab fa-android"></i></div><div class="skill-name">Kotlin</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#61dafb; color:#222;"><i class="fab fa-react"></i></div><div class="skill-name">React</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#3c873a;"><i class="fab fa-node-js"></i></div><div class="skill-name">Node.js</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#f24e1e;"><i class="fab fa-figma"></i></div><div class="skill-name">Figma</div></div>
+                    <div class="skill-item"><div class="skill-icon" style="background:#31a8ff;"><i class="fas fa-paint-brush"></i></div><div class="skill-name">Photoshop</div></div>
+                </div>
+            </div>
+
+            <p class="marquee-legend">python &middot; c# &middot; .net &middot; wasm &middot; ml &middot; llms &middot; computer vision</p>
+        </div>
+    </section>
+
+    <!-- ================= CTA ================= -->
     <section class="section">
-        <h2 class="section-title">Conocimiento en:</h2>
-        <div class="skills-container">
-            <div class="skills-carousel">
-                <!-- Primera serie de habilidades -->
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #f7df1e;">
-                        <i class="fab fa-js-square"></i>
-                    </div>
-                    <div class="skill-name">JavaScript</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #3178c6;">
-                        <i class="fab fa-js-square"></i>
-                    </div>
-                    <div class="skill-name">TypeScript</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #3776ab;">
-                        <i class="fab fa-python"></i>
-                    </div>
-                    <div class="skill-name">Python</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #239120;">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-name">C#</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #00599c;">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-name">C++</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #a4c639;">
-                        <i class="fab fa-android"></i>
-                    </div>
-                    <div class="skill-name">Kotlin</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #e34f26;">
-                        <i class="fab fa-html5"></i>
-                    </div>
-                    <div class="skill-name">HTML5</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #1572b6;">
-                        <i class="fab fa-css3-alt"></i>
-                    </div>
-                    <div class="skill-name">CSS3</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #61dafb;">
-                        <i class="fab fa-react"></i>
-                    </div>
-                    <div class="skill-name">React</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #68217a;">
-                        <i class="fab fa-node-js"></i>
-                    </div>
-                    <div class="skill-name">Node.js</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #f05032;">
-                        <i class="fab fa-git-alt"></i>
-                    </div>
-                    <div class="skill-name">Git</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #f24e1e;">
-                        <i class="fab fa-figma"></i>
-                    </div>
-                    <div class="skill-name">Figma</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #000000;">
-                        <i class="fas fa-sticky-note"></i>
-                    </div>
-                    <div class="skill-name">Notion</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #31a8ff;">
-                        <i class="fas fa-paint-brush"></i>
-                    </div>
-                    <div class="skill-name">Photoshop</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #2b579a;">
-                        <i class="fas fa-file-word"></i>
-                    </div>
-                    <div class="skill-name">Word</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #217346;">
-                        <i class="fas fa-file-excel"></i>
-                    </div>
-                    <div class="skill-name">Excel</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #d24726;">
-                        <i class="fas fa-file-powerpoint"></i>
-                    </div>
-                    <div class="skill-name">PowerPoint</div>
-                </div>
-                
-                <!-- Segunda serie (duplicada para efecto infinito) -->
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #f7df1e;">
-                        <i class="fab fa-js-square"></i>
-                    </div>
-                    <div class="skill-name">JavaScript</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #3178c6;">
-                        <i class="fab fa-js-square"></i>
-                    </div>
-                    <div class="skill-name">TypeScript</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #3776ab;">
-                        <i class="fab fa-python"></i>
-                    </div>
-                    <div class="skill-name">Python</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #239120;">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-name">C#</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #00599c;">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="skill-name">C++</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #a4c639;">
-                        <i class="fab fa-android"></i>
-                    </div>
-                    <div class="skill-name">Kotlin</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #e34f26;">
-                        <i class="fab fa-html5"></i>
-                    </div>
-                    <div class="skill-name">HTML5</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #1572b6;">
-                        <i class="fab fa-css3-alt"></i>
-                    </div>
-                    <div class="skill-name">CSS3</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #61dafb;">
-                        <i class="fab fa-react"></i>
-                    </div>
-                    <div class="skill-name">React</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #68217a;">
-                        <i class="fab fa-node-js"></i>
-                    </div>
-                    <div class="skill-name">Node.js</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #f05032;">
-                        <i class="fab fa-git-alt"></i>
-                    </div>
-                    <div class="skill-name">Git</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #f24e1e;">
-                        <i class="fab fa-figma"></i>
-                    </div>
-                    <div class="skill-name">Figma</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #000000;">
-                        <i class="fas fa-sticky-note"></i>
-                    </div>
-                    <div class="skill-name">Notion</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #31a8ff;">
-                        <i class="fas fa-paint-brush"></i>
-                    </div>
-                    <div class="skill-name">Photoshop</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #2b579a;">
-                        <i class="fas fa-file-word"></i>
-                    </div>
-                    <div class="skill-name">Word</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #217346;">
-                        <i class="fas fa-file-excel"></i>
-                    </div>
-                    <div class="skill-name">Excel</div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon" style="background: #d24726;">
-                        <i class="fas fa-file-powerpoint"></i>
-                    </div>
-                    <div class="skill-name">PowerPoint</div>
-                </div>
-            </div>
+        <div class="cta reveal">
+            <h2>let's build something.</h2>
+            <p>Siempre estoy abierto a nuevos proyectos, colaboraciones o simplemente a platicar sobre tecnología e IA.</p>
+            <button class="btn open-contact"><i class="fas fa-envelope"></i> Escríbeme</button>
         </div>
     </section>
 
-    <!-- Modal para Contacto -->
-    <div class="modal-overlay" id="resumeModal">
+    <footer class="footer">
+        Emanuel Vazquez &middot; Reynosa, México &middot; <span id="year"></span>
+    </footer>
+
+    <!-- Indicador de scroll que te sigue -->
+    <button class="scroll-indicator" id="scrollIndicator" aria-label="Ir a la siguiente sección">
+        <span class="label">scroll</span><i class="fas fa-chevron-down"></i>
+    </button>
+
+    <!-- ================= MODAL CONTACTO ================= -->
+    <div class="modal-overlay" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-window">
-            <div class="modal-header">
-                <span>contact</span>
-                <button class="modal-close" id="closeModal">[x]</button>
+            <div class="window-bar modal-header">
+                <div class="left">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="title">contacto.txt</span>
+                </div>
+                <button class="modal-close" id="closeModal" aria-label="Cerrar">[x]</button>
             </div>
             <div class="modal-content">
-                <h2 class="modal-title">¡Conectemos!</h2>
-                <p class="modal-subtitle">
-                    La forma más fácil de contactarme es por email. No reviso mucho mis redes sociales, 
-                    así que por favor dirige tus consultas directamente a mi correo.
-                </p>
-                
-                <div class="contact-image">
-                    <img src="img/contactdoodle.png" alt="Mi ilustración" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="contact-placeholder" style="display: none;"><i class="fas fa-palette"></i></div>
-                </div>
-                
-                <div class="contact-links">
-                    <p class="contact-main-text">
-                        Envíame un email a: 
-                        <a href="mailto:enema3901@gmail.com" class="contact-email-link">enema3901@gmail.com</a>
-                    </p>
-                    <p class="contact-alt-text">o presiona el botón para abrir tu app de correo.</p>
-                    
-                    <button class="contact-email-btn" onclick="window.location.href='mailto:enema3901@gmail.com'">
-                        <i class="fas fa-envelope"></i> Envíame un email
-                    </button>
-                    
-                    <div class="cv-download-section">
-                        <p class="cv-download-text">O descarga mi CV:</p>
-                        <div class="cv-buttons">
-                            <button class="cv-download-btn" id="downloadCVEsp">
-                                <i class="fas fa-file-pdf"></i> CV (Español)
-                            </button>
-                            <button class="cv-download-btn cv-eng" id="downloadCVEng">
-                                <i class="fas fa-file-pdf"></i> CV (English)
-                            </button>
-                        </div>
+                <div class="modal-side">
+                    <div class="contact-image">
+                        <img src="img/contactdoodle.png" alt="Ilustración" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="contact-placeholder" style="display: none;"><i class="fas fa-envelope"></i></div>
                     </div>
-                    
+                    <h2 class="modal-title" id="modalTitle">Conectemos</h2>
+                    <p class="modal-subtitle">
+                        La forma más fácil de contactarme es por email. No reviso mucho mis redes sociales,
+                        así que por favor escríbeme directamente a mi correo.
+                    </p>
+                </div>
+
+                <div class="modal-main">
+                    <p class="contact-label">// email</p>
+                    <div class="contact-email-row">
+                        <a href="mailto:emanuel.dev39@gmail.com" class="contact-email-link">emanuel.dev39@gmail.com</a>
+                        <button class="copy-btn" id="copyEmail" data-email="emanuel.dev39@gmail.com"><i class="far fa-copy"></i> copiar</button>
+                    </div>
+
+                    <a class="btn contact-email-btn" href="mailto:emanuel.dev39@gmail.com">
+                        <i class="fas fa-envelope"></i> Abrir mi app de correo
+                    </a>
+
+                    <hr class="modal-divider">
+
+                    <p class="contact-label">// curriculum</p>
+                    <div class="cv-buttons">
+                        <a class="btn yellow" href="cv/cvEsp.pdf" download="CV_Emanuel_Vazquez_Español.pdf">
+                            <i class="fas fa-file-pdf"></i> CV (Español)
+                        </a>
+                        <a class="btn ghost" href="cv/cvEng.pdf" download="CV_Emanuel_Vazquez_English.pdf">
+                            <i class="fas fa-file-pdf"></i> CV (English)
+                        </a>
+                    </div>
+
+                    <p class="contact-label">// redes</p>
                     <div class="social-links">
-                        <a href="https://github.com/Ema3901" target="_blank" class="social-link github">
-                            <span class="social-icon"><i class="fab fa-github"></i></span>
-                            <span class="social-text">GitHub</span>
-                        </a>
-                        <a href="https://www.linkedin.com/in/ema-vazquez" target="_blank" class="social-link linkedin">
-                            <span class="social-icon"><i class="fab fa-linkedin"></i></span>
-                            <span class="social-text">LinkedIn</span>
-                        </a>
-                        <a href="https://www.instagram.com/ema_pangolin/" target="_blank" class="social-link instagram">
-                            <span class="social-icon"><i class="fab fa-instagram"></i></span>
-                            <span class="social-text">Instagram</span>
-                        </a>
+                        <a href="https://github.com/Ema3901" target="_blank" rel="noopener" class="social-link github"><i class="fab fa-github"></i> GitHub</a>
+                        <a href="https://www.linkedin.com/in/ema-vazquez/" target="_blank" rel="noopener" class="social-link linkedin"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                        <a href="https://www.instagram.com/ema_pangolin/" target="_blank" rel="noopener" class="social-link instagram"><i class="fab fa-instagram"></i> Instagram</a>
                     </div>
                 </div>
             </div>

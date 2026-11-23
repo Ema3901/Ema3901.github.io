@@ -3,170 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CalzadoJJ</title>
+    <title>CalzadoJJ - Emanuel Vazquez</title>
+    <meta name="theme-color" content="#33CCBB">
     <link rel="icon" type="image/x-icon" href="img/portafolio.ico">
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme');
+            if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/proyecto.css">
 </head>
 <body>
-    <div class="bg-gradient"></div>
-    
+    <div class="bg-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
     <nav class="navbar">
-        <a href="index.html" class="logo">Emanuel Vazquez</a>
-        <a href="index.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Regresar
-        </a>
+        <a href="index.html" class="logo">ema<span class="accent">@</span>dev:~$</a>
+        <div class="nav-controls">
+            <button class="icon-btn" id="themeToggle" aria-label="Cambiar tema">
+                <i class="fas fa-moon"></i><i class="fas fa-sun"></i>
+            </button>
+            <a href="index.html#proyectos" class="btn ghost"><i class="fas fa-arrow-left"></i> Regresar</a>
+        </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-content">
-            <div class="project-info">
-                <h1 class="project-title">CalzadoJJ</h1>
-                
-                <p class="project-description">
-                    Una aplicacion web para catalogo y administracion de una zapateria.
+    <!-- Hero -->
+    <section class="p-hero">
+        <div class="p-hero-content">
+            <div>
+                <span class="hero-kicker">~/proyectos/02</span>
+                <h1 class="p-title"><span class="accent">Calzado</span>JJ</h1>
+                <p class="p-description">
+                    Una aplicación web para catálogo y administración de una zapatería.
                 </p>
-                <p class="project-description">
-                    calzadojj.net
-                </p>
-                
-                <div class="project-stats">
-                    <div class="stat-item">
-                        <span class="stat-label">Tecnología</span>
-                        <span class="stat-value">HTML, CSS y JS</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Año</span>
-                        <span class="stat-value">2024</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Estado</span>
-                        <span class="stat-value">Completado</span>
-                    </div>
+                <p class="p-description p-site"><i class="fas fa-globe"></i> calzadojj.net</p>
+                <div class="p-stats">
+                    <div class="p-stat"><span class="p-stat-label">Tecnología</span><span class="p-stat-value">HTML, CSS y JS</span></div>
+                    <div class="p-stat"><span class="p-stat-label">Año</span><span class="p-stat-value">2024</span></div>
+                    <div class="p-stat"><span class="p-stat-label">Estado</span><span class="p-stat-value">Completado</span></div>
                 </div>
             </div>
-            
-            <div class="hero-image">
-                <img src="img/proyecto2/logo.jpg" alt="QR code" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="hero-placeholder" style="display: none;">[INICIAL_PROYECTO]</div>
+
+            <div class="p-hero-image window">
+                <div class="window-bar">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="title">calzadojj.net</span>
+                </div>
+                <img src="img/proyecto2/logo.jpg" alt="Logo CalzadoJJ" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="p-hero-placeholder">CJJ</div>
             </div>
         </div>
     </section>
 
-    <!-- Descripción Detallada -->
-    <section class="content-section fade-in">
-        <h2 class="section-title">Acerca del Proyecto</h2>
-        <section class="content-section fade-in">
-          <h2 class="section-title">📖 Creación</h2>
+    <!-- Acerca del proyecto -->
+    <section class="p-section">
+        <h2 class="section-title reveal"><span class="prompt">&gt;</span>acerca del proyecto</h2>
 
-        <div class="description-text">
-            <p>
-            CalzadoJJ nació de la necesidad de crear una tienda en línea funcional y atractiva para la venta de calzado, accesible desde cualquier dispositivo.
-            </p>
-            <p>
-            Muchas tiendas web existentes tienen limitaciones como:
-            </p>
+        <div class="p-blocks">
+            <article class="p-block window reveal">
+                <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">creacion.md</span></div>
+                <div class="p-block-body">
+                    <h3>Creación</h3>
+                    <p>
+                        CalzadoJJ nació de la necesidad de crear una tienda en línea funcional y atractiva para la venta de calzado, accesible desde cualquier dispositivo.
+                    </p>
+                    <p>Muchas tiendas web existentes tienen limitaciones como:</p>
+                    <ul>
+                        <li><strong>Dependencia de plataformas externas:</strong> Limitaciones para personalizar totalmente la tienda.</li>
+                        <li><strong>Restricciones comerciales:</strong> Comisiones o funcionalidades limitadas sin planes pagos.</li>
+                        <li><strong>Falta de personalización visual:</strong> No permiten adaptar completamente la experiencia al branding.</li>
+                    </ul>
+                </div>
+            </article>
 
-            <ul>
-                <li>🌐 <strong>Dependencia de plataformas externas:</strong> Limitaciones para personalizar totalmente la tienda.</li>
-                <li>💰 <strong>Restricciones comerciales:</strong> Comisiones o funcionalidades limitadas sin planes pagos.</li>
-                <li>🎨 <strong>Falta de personalización visual:</strong> No permiten adaptar completamente la experiencia al branding.</li>
-            </ul>
+            <article class="p-block window reveal">
+                <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">objetivos.md</span></div>
+                <div class="p-block-body">
+                    <h3>Objetivos del Proyecto</h3>
+                    <ul>
+                        <li>Crear un catálogo dinámico de productos accesible y responsivo.</li>
+                        <li>Permitir a los usuarios realizar compras seguras con datos almacenados en MySQL.</li>
+                        <li>Ofrecer una interfaz intuitiva y atractiva usando tecnologías modernas.</li>
+                        <li>Hospedar la plataforma de manera estable y accesible al público (Hostinger).</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="p-block window reveal">
+                <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">desafios.md</span></div>
+                <div class="p-block-body">
+                    <h3>Desafíos Enfrentados</h3>
+                    <p>Durante el desarrollo me encontré con varios retos interesantes:</p>
+                    <ul>
+                        <li><strong>Integración Backend-Frontend:</strong> Comunicación eficiente entre la base de datos MySQL y la interfaz web dinámica.</li>
+                        <li><strong>Diseño Responsivo:</strong> Adaptación del catálogo y carrito de compras a distintos tamaños de pantalla usando Bootstrap 5.</li>
+                        <li><strong>Experiencia del Usuario:</strong> Navegación fluida, validación de formularios y mensajes claros para cada acción.</li>
+                        <li><strong>Trabajo en Equipo:</strong> Coordinación con Gema Nahomi Vega Rubio para mantener el proyecto ordenado y funcional.</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="p-block window reveal">
+                <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">aprendizajes.md</span></div>
+                <div class="p-block-body">
+                    <h3>Lo que Aprendí</h3>
+                    <ul>
+                        <li><strong>Desarrollo Web Full-Stack:</strong> HTML, CSS, JavaScript, jQuery y conexión con MySQL.</li>
+                        <li><strong>Creación de Interfaces Responsivas:</strong> Diseño adaptado a dispositivos móviles y desktop con Bootstrap 5.</li>
+                        <li><strong>Gestión de Proyectos en Equipo:</strong> Coordinación y control de versiones.</li>
+                        <li><strong>Hosting y Despliegue:</strong> Publicación de la tienda en Hostinger de manera estable.</li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="p-block window reveal">
+                <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">evolucion.md</span></div>
+                <div class="p-block-body">
+                    <h3>Evolución del Proyecto</h3>
+                    <p>
+                        El proyecto comenzó como un prototipo básico de catálogo y evolucionó a una tienda en línea completa. Las mejoras incluyeron:
+                    </p>
+                    <ul>
+                        <li>Catálogo de productos dinámico</li>
+                        <li>Carrito de compras funcional</li>
+                        <li>Validaciones de usuario y mensajes de feedback</li>
+                        <li>Diseño responsivo y experiencia completa en distintos dispositivos</li>
+                    </ul>
+                    <p>
+                        Este proyecto refleja mi capacidad de combinar habilidades técnicas con diseño y experiencia de usuario, creando una solución web práctica, atractiva y funcional.
+                    </p>
+                </div>
+            </article>
         </div>
-
-        <h3 class="section-title">🎯 Objetivos del Proyecto</h3>
-        <div class="description-text">
-            <ul>
-                <li>Crear un catálogo dinámico de productos accesible y responsivo.</li>
-                <li>Permitir a los usuarios realizar compras seguras con datos almacenados en MySQL.</li>
-                <li>Ofrecer una interfaz intuitiva y atractiva usando tecnologías modernas.</li>
-                <li>Hospedar la plataforma de manera estable y accesible al público (Hostinger).</li>
-            </ul>
-        </div>
-
-        <h3 class="section-title">🛠️ Desafíos Enfrentados</h3>
-        <div class="description-text">
-            <p>Durante el desarrollo me encontré con varios retos interesantes:</p>
-            <ul>
-                <li><strong>Integración Backend-Frontend:</strong> Comunicación eficiente entre la base de datos MySQL y la interfaz web dinámica.</li>
-                <li><strong>Diseño Responsivo:</strong> Adaptación del catálogo y carrito de compras a distintos tamaños de pantalla usando Bootstrap 5.</li>
-                <li><strong>Experiencia del Usuario:</strong> Navegación fluida, validación de formularios y mensajes claros para cada acción.</li>
-                <li><strong>Trabajo en Equipo:</strong> Coordinación con Gema Nahomi Vega Rubio para mantener el proyecto ordenado y funcional.</li>
-        </ul>
-        </div>
-
-        <h3 class="section-title">💡 Lo que Aprendí</h3>
-        <div class="description-text">
-            <ul>
-                <li><strong>Desarrollo Web Full-Stack:</strong> HTML, CSS, JavaScript, jQuery y conexión con MySQL.</li>
-                <li><strong>Creación de Interfaces Responsivas:</strong> Diseño adaptado a dispositivos móviles y desktop con Bootstrap 5.</li>
-                <li><strong>Gestión de Proyectos en Equipo:</strong> Coordinación y control de versiones.</li>
-                <li><strong>Hosting y Despliegue:</strong> Publicación de la tienda en Hostinger de manera estable.</li>
-            </ul>
-        </div>
-
-        <h3 class="section-title">🚀 Evolución del Proyecto</h3>
-        <div class="description-text">
-            <p>
-            El proyecto comenzó como un prototipo básico de catálogo y evolucionó a una tienda en línea completa. Las mejoras incluyeron:
-            </p>
-            <ul>
-                <li>Catálogo de productos dinámico</li>
-                <li>Carrito de compras funcional</li>
-                <li>Validaciones de usuario y mensajes de feedback</li>
-                <li>Diseño responsivo y experiencia completa en distintos dispositivos</li>
-            </ul>
-            <p>
-            Este proyecto refleja mi capacidad de combinar habilidades técnicas con diseño y experiencia de usuario, creando una solución web práctica, atractiva y funcional.
-            </p>
-        </div>
-
-        <div class="tech-stack">
-            <h3 class="section-title" style="font-size: 1.8rem;">Tecnologías Utilizadas</h3>
-            <div class="tech-items">
-                <span class="tech-item">HTML</span>
-                <span class="tech-item">CSS</span>
-                <span class="tech-item">JavaScript</span>
-                <span class="tech-item">jQuery</span>
-                <span class="tech-item">Bootstrap 5</span>
-                <span class="tech-item">MySQL</span>
-                <span class="tech-item">Hostinger</span>
-            </div>
-        </div>
-
     </section>
 
-    <!-- Imágenes del Proyecto -->
-    <section class="content-section fade-in">
-        <h2 class="section-title">Capturas del Proyecto</h2>
+    <!-- Tecnologías -->
+    <section class="p-section">
+        <h2 class="section-title reveal"><span class="prompt">&gt;</span>tecnologías</h2>
+        <div class="tech-items reveal">
+            <span class="tech-item">HTML</span>
+            <span class="tech-item">CSS</span>
+            <span class="tech-item">JavaScript</span>
+            <span class="tech-item">jQuery</span>
+            <span class="tech-item">Bootstrap 5</span>
+            <span class="tech-item">MySQL</span>
+            <span class="tech-item">Hostinger</span>
+        </div>
+    </section>
+
+    <!-- Capturas -->
+    <section class="p-section">
+        <h2 class="section-title reveal"><span class="prompt">&gt;</span>capturas</h2>
         <div class="images-grid">
-            <div class="project-image">
-                <img src="img/proyecto2/vista1.jpg" alt="Captura 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="image-placeholder" style="display: none;">Vista 1</div>
+            <div class="shot window reveal">
+                <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">vista_1.jpg</span></div>
+                <img src="img/proyecto2/vista1.jpg" alt="Captura 1" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-placeholder">Vista 1</div>
             </div>
-            
-            <div class="project-image">
-                <img src="img/proyecto2/vista2.jpg" alt="Captura 2" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="image-placeholder" style="display: none;">Vista 2</div>
+            <div class="shot window reveal">
+                <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">vista_2.jpg</span></div>
+                <img src="img/proyecto2/vista2.jpg" alt="Captura 2" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-placeholder">Vista 2</div>
             </div>
         </div>
     </section>
 
-    <!-- Botones de Acción -->
-    <section class="content-section fade-in">
-        <div class="action-buttons">
-            <a href="https://github.com/Ema3901/CalzadoJJ" target="_blank" class="action-btn">
+    <!-- Acciones -->
+    <section class="p-section">
+        <div class="action-buttons reveal">
+            <a href="https://github.com/Ema3901/CalzadoJJ" target="_blank" rel="noopener" class="btn">
                 <i class="fab fa-github"></i> Ver en GitHub
             </a>
-            <a href="https://github.com/Ema3901/CalzadoJJ/releases/download/FreeUse/Remake-Integrador-main.zip" class="action-btn secondary" download>
+            <a href="https://github.com/Ema3901/CalzadoJJ/releases/download/FreeUse/Remake-Integrador-main.zip" class="btn yellow" download>
                 <i class="fas fa-download"></i> Descargar Zip
             </a>
-
         </div>
     </section>
+
+    <section class="p-section">
+        <div class="p-pager">
+            <a href="proyecto1.html" class="btn ghost"><i class="fas fa-arrow-left"></i> Anterior: Generador QR</a>
+            <a href="proyecto3.html" class="btn ghost">Siguiente: UTTS <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        Emanuel Vazquez &middot; Reynosa, México &middot; <span id="year"></span>
+    </footer>
 
     <script src="js/proyecto.js"></script>
 </body>
-
 </html>
