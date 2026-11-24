@@ -26,14 +26,44 @@ export function nearest(tex) {
     return tex;
 }
 
-export function canvasTexture(w, h, draw) {
+export function canvasTexture(w, h, draw, { linear = false } = {}) {
     const c = document.createElement('canvas');
     c.width = w;
     c.height = h;
     const ctx = c.getContext('2d');
     ctx.imageSmoothingEnabled = false;
     draw(ctx, w, h);
-    return nearest(new THREE.CanvasTexture(c));
+    const t = nearest(new THREE.CanvasTexture(c));
+    // PS2: filtrado bilineal (suave). PS1/pixel art: nearest.
+    if (linear) {
+        t.magFilter = THREE.LinearFilter;
+        t.minFilter = THREE.LinearFilter;
+    }
+    return t;
+}
+
+/**
+ * Convierte un modelo al look PS2: quita las aristas negras, usa sombreado
+ * suave (salvo materiales marcados con userData.keepFlat) y filtrado bilineal.
+ */
+export function ps2ify(obj) {
+    const lines = [];
+    obj.traverse((o) => {
+        if (o.isLineSegments) lines.push(o);
+        if (!o.isMesh) return;
+        (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => {
+            if (m.flatShading && !m.userData.keepFlat) {
+                m.flatShading = false;
+                m.needsUpdate = true;
+            }
+            if (m.map && m.map.magFilter !== THREE.LinearFilter) {
+                m.map.magFilter = THREE.LinearFilter;
+                m.map.minFilter = THREE.LinearFilter;
+                m.map.needsUpdate = true;
+            }
+        });
+    });
+    lines.forEach((l) => l.parent.remove(l));
 }
 
 export function px(ctx, x, y, color, w = 1, h = 1) {
@@ -88,10 +118,12 @@ function ps1Snap(mat) {
 }
 
 export function lambert(mapOrColor, extra = {}) {
-    const opts = { flatShading: true, ...extra };
+    const { snap = true, ...rest } = extra;
+    const opts = { flatShading: true, ...rest };
     if (mapOrColor && mapOrColor.isTexture) opts.map = mapOrColor;
     else if (mapOrColor != null) opts.color = new THREE.Color(mapOrColor);
-    return ps1Snap(new THREE.MeshLambertMaterial(opts));
+    const m = new THREE.MeshLambertMaterial(opts);
+    return snap ? ps1Snap(m) : m;
 }
 
 const edgeMats = new Map();

@@ -3,7 +3,7 @@
 //  Pose: de pie sobre las patas traseras (como hacen los pangolines),
 //  cola larga apoyada atrás, carta mordida en la punta del hocico.
 // =========================================================
-import { THREE, createStage, canvasTexture, px, bake, lambert, mesh, blobShadow, pedestal, makeRng } from './ps2.js';
+import { THREE, createStage, canvasTexture, px, bake, lambert, mesh, blobShadow, pedestal, makeRng, ps2ify } from './ps2.js';
 
 const rand = makeRng(39);
 
@@ -52,7 +52,8 @@ const letterBack = canvasTexture(32, 20, (ctx, w, h) => {
     bake(ctx, w, h, { noise: 0.03, shade: 0.08, bands: 3, rand });
 });
 
-const plateMat = lambert(plateTex);
+const plateMat = lambert(plateTex, { snap: false });
+plateMat.userData.keepFlat = true;   // las escamas se quedan angulosas
 const skinMat = lambert(skinTex);
 const darkMat = lambert(INK);
 const clawMat = lambert('#4A3A2E');
@@ -186,7 +187,7 @@ function buildPangolin() {
 // ---------- Montaje ----------
 export function mount(container, opts = {}) {
     const stage = createStage(container, {
-        pixel: 3,
+        pixel: 2,
         fov: 28,
         camera: [0, 1.5, 5.6],
         target: [0, 0.98, 0],
@@ -208,6 +209,9 @@ export function mount(container, opts = {}) {
     shadow.scale.set(1, 1.5, 1);
     shadow.position.set(0, 0.225, -0.05);
     root.add(shadow);
+
+    // Look PS2: sin aristas negras, sombreado suave y texturas filtradas
+    ps2ify(root);
 
     stage.start((t) => {
         g.position.y = 0.22 + Math.abs(Math.sin(t * 2.0)) * 0.025;
