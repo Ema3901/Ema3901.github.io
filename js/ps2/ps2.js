@@ -66,6 +66,89 @@ export function ps2ify(obj) {
     lines.forEach((l) => l.parent.remove(l));
 }
 
+// ---------- Sombreado "horneado" (estilo texturas pintadas a mano) ----------
+// En vez de luces en tiempo real, cada vértice guarda su color de luz/sombra.
+// Sombra fría (azul-lila), luz cálida suave y un poco de oclusión hacia abajo.
+const BAKE_LIGHT = new THREE.Vector3(0.45, 0.75, 0.55).normalize();
+
+export function unlit(mapOrColor, extra = {}) {
+    const opts = { vertexColors: true, ...extra };
+    if (mapOrColor && mapOrColor.isTexture) opts.map = mapOrColor;
+    else if (mapOrColor != null) opts.color = new THREE.Color(mapOrColor);
+    return new THREE.MeshBasicMaterial(opts);
+}
+
+/**
+ * Pinta en cada vértice la iluminación de la escena (una sola vez).
+ * Las normales y posiciones se toman en coordenadas del mundo al momento de llamarla.
+ * opts: { shadow, light, ao, aoTop, aoBottom, strength }
+ */
+export function bakeVertexLight(obj, opts = {}) {
+    const {
+        shadow = new THREE.Color('#8E93C4'),    // tono de sombra (frío)
+        light = new THREE.Color('#FFF6EC'),     // tono de luz (cálido)
+        ao = 0.22,                               // cuánto se oscurece hacia abajo
+        aoTop = 2.2,
+        aoBottom = 0,
+        strength = 1
+    } = opts;
+    obj.updateMatrixWorld(true);
+    const n = new THREE.Vector3();
+    const p = new THREE.Vector3();
+    const nm = new THREE.Matrix3();
+    const c = new THREE.Color();
+    obj.traverse((o) => {
+        if (!o.isMesh || !o.material || !(Array.isArray(o.material) ? o.material : [o.material]).some((mm) => mm.vertexColors)) return;
+        let geo = o.geometry;
+        if (geo.userData.baked) { geo = geo.clone(); o.geometry = geo; }
+        geo.userData.baked = true;
+        if (!geo.attributes.normal) geo.computeVertexNormals();
+        const pos = geo.attributes.position;
+        const nor = geo.attributes.normal;
+        const cols = new Float32Array(pos.count * 3);
+        nm.getNormalMatrix(o.matrixWorld);
+        for (let i = 0; i < pos.count; i++) {
+            n.fromBufferAttribute(nor, i).applyMatrix3(nm).normalize();
+            p.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld);
+            // wrap lighting suave (como pintado), mezcla de sombra fría a luz cálida
+            let l = (n.dot(BAKE_LIGHT) * 0.5 + 0.5);
+            l = Math.pow(l, 1.15);
+            c.copy(shadow).lerp(light, l);
+            // oclusión hacia abajo
+            const k = THREE.MathUtils.clamp((p.y - aoBottom) / (aoTop - aoBottom), 0, 1);
+            c.multiplyScalar(1 - ao * (1 - k));
+            // borde suave (fresnel) claro
+            const rim = Math.pow(1 - Math.max(0, n.z), 3) * 0.12;
+            c.r += rim; c.g += rim; c.b += rim * 1.1;
+            if (strength !== 1) c.lerp(new THREE.Color(1, 1, 1), 1 - strength);
+            cols[i * 3] = c.r; cols[i * 3 + 1] = c.g; cols[i * 3 + 2] = c.b;
+        }
+        geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
+    });
+}
+
+/** Cambia todos los materiales Lambert de un objeto por materiales sin luz con vertex color. */
+export function toUnlit(obj) {
+    obj.traverse((o) => {
+        if (!o.isMesh) return;
+        const conv = (mm) => {
+            if (!mm.isMeshLambertMaterial) return mm;
+            const u = new THREE.MeshBasicMaterial({
+                map: mm.map || null,
+                color: mm.color ? mm.color.clone() : 0xffffff,
+                vertexColors: true,
+                transparent: mm.transparent,
+                opacity: mm.opacity,
+                side: mm.side,
+                depthWrite: mm.depthWrite
+            });
+            if (u.map) { u.map.magFilter = THREE.LinearFilter; u.map.minFilter = THREE.LinearFilter; u.map.needsUpdate = true; }
+            return u;
+        };
+        o.material = Array.isArray(o.material) ? o.material.map(conv) : conv(o.material);
+    });
+}
+
 export function px(ctx, x, y, color, w = 1, h = 1) {
     ctx.fillStyle = color;
     ctx.fillRect(x, y, w, h);

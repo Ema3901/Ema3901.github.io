@@ -1,28 +1,26 @@
 // =========================================================
-//  Ema chibi low-poly (estilo figura simple de PS1/PS2)
-//  Cabeza grande con cara plana dibujada, pelo en piezas
-//  angulares, cuerpo de formas simples y fondo de cuadros.
-//  Rasgos: jellyfish cut negro con puntas menta, frente algo
+//  Ema - figura low-poly con sombreado "pintado" (sin luces)
+//  Estilo: modelo simple con texturas pintadas y luz horneada
+//  en los vértices (sombra fría lila, luz cálida suave), pelo en
+//  mechones anchos y planos, cara dibujada, ventana de Paint
+//  de fondo y dithering. Saluda con la mano.
+//  Rasgos: jellyfish cut negro con puntas menta y frente algo
 //  descubierta, lentes sin marco, arete de cruz, sudadera azul
-//  marino, chaleco negro con reflejante amarillo, lanyard y pin.
+//  marino, chaleco negro con reflejante, lanyard y pin.
 // =========================================================
-import { THREE, createStage, canvasTexture, px, lambert } from './ps2.js';
+import { THREE, createStage, canvasTexture, px, unlit, bakeVertexLight } from './ps2.js';
 
 // ---------- Paleta ----------
-const SKIN = '#E6B48F';
-const HAIR = '#1B1A20';
-const HAIR_HI = '#34323C';
-const MINT = '#86DDBD';
-const MINT_DK = '#3FA987';
-const NAVY = '#24305A';
-const VEST = '#1E2024';
-const NEON = '#E3F23A';
-const PANTS = '#2B2F3A';
-const SHOES = '#3B2B24';
-const INK = '#141016';
+const SKIN = '#F1C9AE';
+const HAIR = '#26232E';
+const MINT = '#9BE6CB';
+const NAVY = '#3A4A7E';
+const VEST = '#2A2C33';
+const NEON = '#E6F25A';
+const PANTS = '#25272E';
+const SHOE = '#4C5A93';
 
-const soft = (c, extra = {}) => lambert(c, { flatShading: false, snap: false, ...extra });
-const flat = (c, extra = {}) => lambert(c, { flatShading: true, snap: false, ...extra });
+const tex = (w, h, draw) => canvasTexture(w, h, draw, { linear: true });
 
 function m(geo, material, { pos, rot, scale, parent } = {}) {
     const o = new THREE.Mesh(geo, material);
@@ -33,307 +31,478 @@ function m(geo, material, { pos, rot, scale, parent } = {}) {
     return o;
 }
 
-// ---------- Cara (se pinta en la cara frontal de la cabeza) ----------
-function faceTexture(blink = false) {
-    return canvasTexture(128, 128, (ctx, w, h) => {
-        px(ctx, 0, 0, SKIN, w, h);
+// ---------- Cara (plano frontal, pintada como en los modelos de referencia) ----------
+function faceTexture(blink) {
+    return tex(128, 128, (ctx) => {
+        ctx.imageSmoothingEnabled = true;
+        ctx.clearRect(0, 0, 128, 128);
 
-        const ey = 72;
-        for (const ex of [45, 83]) {
+        const ey = 62;
+        for (const [ex, dir] of [[42, -1], [86, 1]]) {
             if (blink) {
-                ctx.strokeStyle = INK;
+                ctx.strokeStyle = '#2A2028';
                 ctx.lineWidth = 3;
                 ctx.beginPath();
-                ctx.moveTo(ex - 7, ey + 2);
-                ctx.lineTo(ex + 7, ey + 2);
+                ctx.moveTo(ex - 11, ey + 3);
+                ctx.quadraticCurveTo(ex, ey + 7, ex + 11, ey + 3);
                 ctx.stroke();
             } else {
-                // ojo: contorno negro, blanco, pupila grande y brillo
-                ctx.fillStyle = INK;
-                ctx.beginPath(); ctx.ellipse(ex, ey, 7, 10, 0, 0, Math.PI * 2); ctx.fill();
+                // ojo: blanco, iris oscuro con degradado, brillo
+                ctx.fillStyle = '#FBF7F4';
+                ctx.beginPath(); ctx.ellipse(ex, ey + 1, 11, 9, 0, 0, Math.PI * 2); ctx.fill();
+                const ig = ctx.createLinearGradient(0, ey - 8, 0, ey + 10);
+                ig.addColorStop(0, '#1A1418');
+                ig.addColorStop(1, '#5A3A30');
+                ctx.fillStyle = ig;
+                ctx.beginPath(); ctx.ellipse(ex - dir * 1, ey + 2, 6.5, 8, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#0D0A0C';
+                ctx.beginPath(); ctx.ellipse(ex - dir * 1, ey + 1, 3, 4, 0, 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = '#FFFFFF';
-                ctx.beginPath(); ctx.ellipse(ex, ey, 5, 8, 0, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = INK;
-                ctx.beginPath(); ctx.ellipse(ex + (ex < 64 ? 1 : -1), ey + 1.5, 4, 6.5, 0, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#FFFFFF';
-                ctx.beginPath(); ctx.arc(ex - 1.5, ey - 2.5, 1.8, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(ex - dir * 1 - 2.5, ey - 2, 2, 0, Math.PI * 2); ctx.fill();
+                // párpado superior grueso, recto (mirada neutra, un poco seria)
+                ctx.fillStyle = '#231B22';
+                ctx.beginPath();
+                ctx.moveTo(ex - 13, ey - 4);
+                ctx.lineTo(ex + 13, ey - 6);
+                ctx.lineTo(ex + 13, ey - 3);
+                ctx.lineTo(ex - 13, ey - 1);
+                ctx.closePath();
+                ctx.fill();
+                // tapa el blanco por encima del párpado
+                ctx.clearRect(ex - 14, ey - 14, 28, 9 - (dir > 0 ? 1 : 0));
+                // línea inferior suave
+                ctx.strokeStyle = 'rgba(120,80,80,0.5)';
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.moveTo(ex - 8, ey + 10);
+                ctx.quadraticCurveTo(ex, ey + 12, ex + 8, ey + 10);
+                ctx.stroke();
             }
             // cejas rectas
-            ctx.fillStyle = '#2A1E1C';
-            ctx.fillRect(ex - 8, ey - 17, 16, 3);
+            ctx.fillStyle = '#2B2128';
+            ctx.fillRect(ex - 10, ey - 17, 20, 3);
         }
 
-        // lentes sin marco: tinte azulado, borde inferior claro, puente y patitas
-        ctx.fillStyle = 'rgba(170,195,255,0.16)';
-        ctx.fillRect(32, 60, 26, 22);
-        ctx.fillRect(70, 60, 26, 22);
-        ctx.fillStyle = 'rgba(255,255,255,0.75)';
-        ctx.fillRect(32, 82, 26, 1);
-        ctx.fillRect(70, 82, 26, 1);
-        ctx.fillRect(53, 62, 3, 2);
-        ctx.fillRect(91, 62, 3, 2);
-        ctx.fillStyle = '#B7BEC8';
-        ctx.fillRect(58, 63, 12, 2);
-        ctx.fillRect(0, 63, 32, 2);
-        ctx.fillRect(96, 63, 32, 2);
+        // lentes sin marco: brillo diagonal + borde inferior
+        ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+        ctx.lineWidth = 1.2;
+        for (const ex of [42, 86]) {
+            ctx.beginPath();
+            ctx.moveTo(ex - 15, ey + 13);
+            ctx.lineTo(ex + 15, ey + 13);
+            ctx.stroke();
+            ctx.fillStyle = 'rgba(190,210,255,0.14)';
+            ctx.fillRect(ex - 15, ey - 10, 30, 23);
+            ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+            ctx.beginPath();
+            ctx.moveTo(ex + 6, ey - 8);
+            ctx.lineTo(ex + 11, ey - 3);
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+        }
+        ctx.fillStyle = '#C0C6D2';
+        ctx.fillRect(57, ey - 6, 14, 2);
 
-        // nariz (sombra mínima) y boca pequeña neutra
-        ctx.fillStyle = 'rgba(170,110,80,0.45)';
-        ctx.fillRect(63, 88, 3, 2);
-        ctx.strokeStyle = '#7A4636';
-        ctx.lineWidth = 2;
+        // nariz (sombra mínima) y boca neutra pequeña
+        ctx.fillStyle = 'rgba(190,120,110,0.45)';
+        ctx.fillRect(63, 84, 3, 2);
+        ctx.strokeStyle = '#B0706A';
+        ctx.lineWidth = 1.8;
         ctx.beginPath();
-        ctx.moveTo(58, 99);
-        ctx.quadraticCurveTo(64, 101, 70, 99);
+        ctx.moveTo(59, 96);
+        ctx.lineTo(69, 96);
         ctx.stroke();
     });
 }
 
-// ---------- Pelo ----------
-// Pieza angular (pirámide de 4 lados) con la base en el origen y la punta hacia abajo.
-const spikeGeo = (() => {
-    const g = new THREE.ConeGeometry(0.5, 1, 4, 1);
-    g.rotateY(Math.PI / 4);
-    g.rotateX(Math.PI);
-    g.translate(0, -0.5, 0);
-    return g;
-})();
-
-// En el cono, la fila de arriba del canvas queda en la punta.
-function hairTex(mintRows) {
-    return canvasTexture(4, 32, (ctx, w, h) => {
-        px(ctx, 0, 0, HAIR, w, h);
-        px(ctx, 1, 0, HAIR_HI, 1, h);
-        for (let y = 0; y < mintRows; y++) px(ctx, 0, y, y < mintRows * 0.45 ? MINT : MINT_DK, w, 1);
-        if (mintRows) px(ctx, 0, mintRows, '#1F4A3E', w, 2);
+// ---------- Pelo: degradado negro → menta en las puntas ----------
+// Para planos de mechón: v = 1 arriba (raíz), v = 0 abajo (punta)
+function hairTexture(mintFrom) {
+    return tex(16, 64, (ctx, w, h) => {
+        ctx.imageSmoothingEnabled = true;
+        const g = ctx.createLinearGradient(0, 0, 0, h);
+        g.addColorStop(0, '#3C3846');
+        g.addColorStop(0.15, HAIR);
+        if (mintFrom < 1) {
+            g.addColorStop(Math.max(0.16, mintFrom - 0.15), HAIR);
+            g.addColorStop(mintFrom, '#2F6B5A');
+            g.addColorStop(Math.min(1, mintFrom + 0.18), '#6CCCA9');
+            g.addColorStop(1, MINT);
+        } else {
+            g.addColorStop(1, '#1E1C24');
+        }
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+        // líneas pintadas de mechón
+        ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+        ctx.lineWidth = 1;
+        for (let x = 2; x < w; x += 4) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x + 1, h);
+            ctx.stroke();
+        }
     });
 }
-const blackHair = flat(hairTex(0));
-const tipsHair = flat(hairTex(14));
-const mintHair = flat(hairTex(26));
 
-function spike(parent, { x, y, z, w, len, d, rx = 0, rz = 0, ry = 0, mat = blackHair }) {
-    const o = new THREE.Mesh(spikeGeo, mat);
-    o.position.set(x, y, z);
-    o.rotation.set(rx, ry, rz);
-    o.scale.set(w, len, d);
-    parent.add(o);
-    return o;
+/**
+ * Mechón plano y ancho (como "hair card" de los modelos de referencia):
+ * una tira curva de 2 segmentos que sale de la cabeza y termina en punta.
+ * angle: alrededor de la cabeza (0 = frente). Sale en (yTop, rTop) y cae a (yBot, rBot).
+ */
+function lock(parent, { angle, yTop, rTop, yBot, rBot, width, curl = 0, map, tilt = 0 }) {
+    const pivot = new THREE.Group();
+    pivot.rotation.y = angle;
+    pivot.rotation.z = tilt;
+    parent.add(pivot);
+
+    const pos = [];
+    const uv = [];
+    const rows = 4;
+    for (let r = 0; r <= rows; r++) {
+        const t = r / rows;
+        const y = yTop + (yBot - yTop) * t;
+        const z = rTop + (rBot - rTop) * t + Math.sin(t * Math.PI) * 0.05 + curl * t * t;
+        const w = width * (1 - Math.pow(t, 2.2) * 0.9);   // se afila en la punta
+        pos.push(-w / 2, y, z, w / 2, y, z);
+        uv.push(0, 1 - t, 1, 1 - t);
+    }
+    const idx = [];
+    for (let r = 0; r < rows; r++) {
+        const k = r * 2;
+        idx.push(k, k + 2, k + 1, k + 1, k + 2, k + 3);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    geo.setIndex(idx);
+    geo.computeVertexNormals();
+    const o = new THREE.Mesh(geo, unlit(map, { side: THREE.DoubleSide }));
+    pivot.add(o);
+    return pivot;
 }
 
-// Cabeza: caja redondeada, con la cara plana al frente y quijada algo más angosta
-function headGeometry(W, H, D) {
-    const geo = new THREE.BoxGeometry(W, H, D, 4, 4, 4);
+// ---------- Ropa ----------
+const navyTex = tex(32, 32, (ctx, w, h) => {
+    ctx.imageSmoothingEnabled = true;
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, '#4A5B92');
+    g.addColorStop(1, NAVY);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+});
+
+// Chaleco (u = 0 y u = 1 son las orillas del frente)
+const vestTex = tex(128, 64, (ctx, w, h) => {
+    px(ctx, 0, 0, VEST, w, h);
+    ctx.fillStyle = 'rgba(255,255,255,0.04)';
+    for (let y = 0; y < h; y += 3) ctx.fillRect(0, y, w, 1);
+    for (const x0 of [0, w - 14]) {
+        px(ctx, x0, 0, NEON, 14, h);
+        px(ctx, x0 + 4, 0, '#D8DCE6', 6, h);
+    }
+    px(ctx, 0, 46, NEON, w, 9);
+    px(ctx, 0, 48, '#D8DCE6', w, 4);
+});
+
+const lanyardTex = tex(8, 32, (ctx, w, h) => {
+    for (let y = 0; y < h; y++) px(ctx, 0, y, y % 8 < 4 ? '#F6F7F3' : '#73C9A6', w, 1);
+});
+
+const pinTex = tex(32, 32, (ctx) => {
+    ctx.imageSmoothingEnabled = true;
+    ctx.fillStyle = '#B4554A';
+    ctx.beginPath(); ctx.arc(16, 16, 16, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#F0DCCB';
+    ctx.beginPath(); ctx.ellipse(16, 13, 6, 7, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#2E2426';
+    ctx.beginPath(); ctx.ellipse(16, 8, 8, 4, 0, Math.PI, 0); ctx.fill();
+    ctx.fillStyle = '#E0BE55';
+    ctx.fillRect(12, 22, 8, 5);
+});
+
+// Zapato con moño dibujado (como el de la referencia)
+const shoeTex = tex(32, 32, (ctx, w, h) => {
+    px(ctx, 0, 0, SHOE, w, h);
+    ctx.strokeStyle = '#2A3360';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.ellipse(11, 14, 5, 3, 0, 0, Math.PI * 2);
+    ctx.ellipse(21, 14, 5, 3, 0, 0, Math.PI * 2);
+    ctx.stroke();
+});
+
+// ---------- Geometrías ----------
+function headGeometry(R) {
+    const geo = new THREE.SphereGeometry(R, 16, 12);
     const p = geo.attributes.position;
-    const hx = W / 2, hy = H / 2, hz = D / 2, k = 0.42;
     for (let i = 0; i < p.count; i++) {
-        let nx = p.getX(i) / hx, ny = p.getY(i) / hy, nz = p.getZ(i) / hz;
-        const len = Math.hypot(nx, ny, nz) || 1;
-        nx = nx * (1 - k) + (nx / len) * k;
-        ny = ny * (1 - k) + (ny / len) * k;
-        nz = nz * (1 - k) + (nz / len) * k;
-        if (ny < 0) nx *= 1 - 0.14 * -ny;
-        p.setXYZ(i, nx * hx, ny * hy, nz * hz);
+        let x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+        x *= 1.02;
+        if (y < 0) {
+            const k = -y / R;
+            x *= 1 - 0.3 * k * k;    // barbilla más angosta pero no en punta
+            z *= 1 - 0.1 * k;
+            y *= 1.06;
+        }
+        if (z > 0) z *= 0.9;          // cara más plana al frente
+        p.setXYZ(i, x, y, z);
     }
     geo.computeVertexNormals();
     return geo;
 }
 
-// ---------- Ropa ----------
-const vestTex = canvasTexture(64, 32, (ctx, w, h) => {
-    px(ctx, 0, 0, VEST, w, h);
-    for (let y = 0; y < h; y += 2) for (let x = (y / 2) % 2; x < w; x += 2) px(ctx, x, y, '#272A30');
-    for (const x0 of [0, w - 6]) {
-        px(ctx, x0, 0, NEON, 6, h);
-        px(ctx, x0 + 2, 0, '#CDD2D8', 2, h);
-    }
-    px(ctx, 0, 22, NEON, w, 4);
-    px(ctx, 0, 23, '#CDD2D8', w, 2);
-});
+// Pantalón acampanado (más ancho abajo, como la referencia)
+function pantLeg() {
+    return new THREE.CylinderGeometry(0.11, 0.17, 0.8, 8, 2);
+}
 
-const lanyardTex = canvasTexture(4, 16, (ctx, w, h) => {
-    for (let y = 0; y < h; y++) px(ctx, 0, y, y % 4 < 2 ? '#F4F6F2' : '#5FBE97', w, 1);
-});
-
-const pinTex = canvasTexture(16, 16, (ctx, w, h) => {
-    ctx.fillStyle = '#B04A3C';
-    ctx.beginPath(); ctx.arc(8, 8, 8, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#EBD3BF';
-    ctx.beginPath(); ctx.arc(8, 7, 3.5, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#2A2224';
-    ctx.fillRect(4, 3, 8, 2);
-    ctx.fillStyle = '#D9B64C';
-    ctx.fillRect(6, 11, 4, 3);
-});
+// Mano abierta grande (palma + dedos juntos, estilo figura)
+function hand(parent, skinMat, { mirror = 1 } = {}) {
+    const h = new THREE.Group();
+    parent.add(h);
+    m(new THREE.BoxGeometry(0.16, 0.15, 0.06, 2, 2, 1), skinMat, { pos: [0, -0.075, 0], parent: h });
+    [-0.052, -0.017, 0.018, 0.053].forEach((x, i) => {
+        const len = [0.11, 0.13, 0.125, 0.1][i];
+        m(new THREE.CylinderGeometry(0.017, 0.019, len, 5), skinMat, { pos: [x, -0.15 - len / 2, 0], rot: [0, 0, x * 0.9], parent: h });
+    });
+    m(new THREE.CylinderGeometry(0.019, 0.021, 0.09, 5), skinMat, { pos: [mirror * 0.095, -0.06, 0.015], rot: [0, 0, mirror * 0.9], parent: h });
+    return h;
+}
 
 // ---------- Personaje ----------
 function buildEma() {
     const g = new THREE.Group();
-    const skin = soft(SKIN);
-    const navy = soft(NAVY);
-    const silver = soft('#DCE0E6');
+    const skin = unlit(SKIN);
+    const navy = unlit(navyTex);
 
-    // Piernas y zapatos
+    // ---- Piernas: pantalón acampanado + zapatos grandes ----
     for (const sx of [-1, 1]) {
-        m(new THREE.BoxGeometry(0.2, 0.62, 0.22), soft(PANTS), { pos: [sx * 0.12, 0.43, 0], parent: g });
-        m(new THREE.BoxGeometry(0.22, 0.13, 0.3), soft(SHOES), { pos: [sx * 0.12, 0.065, 0.04], parent: g });
+        m(pantLeg(), unlit(PANTS), { pos: [sx * 0.13, 0.55, 0], parent: g });
+        m(new THREE.SphereGeometry(0.13, 10, 6, 0, Math.PI * 2, 0, Math.PI * 0.6), unlit(shoeTex), {
+            pos: [sx * 0.14, 0.09, 0.04], scale: [1.1, 0.9, 1.5], parent: g
+        });
     }
 
-    // Torso (sudadera)
-    m(new THREE.CylinderGeometry(0.25, 0.28, 0.64, 10), navy, { pos: [0, 1.03, 0], scale: [1, 1, 0.66], parent: g });
-    m(new THREE.SphereGeometry(0.15, 8, 6), navy, { pos: [0, 1.33, -0.1], scale: [1.5, 0.6, 0.8], parent: g });   // capucha
+    // ---- Torso: sudadera ----
+    m(new THREE.CylinderGeometry(0.22, 0.26, 0.62, 12, 2), navy, { pos: [0, 1.22, 0], scale: [1, 1, 0.7], parent: g });
+    m(new THREE.SphereGeometry(0.15, 10, 6), navy, { pos: [0, 1.5, -0.09], scale: [1.45, 0.6, 0.85], parent: g });   // capucha
 
-    // Chaleco abierto al frente
-    const gap = 1.0;
-    m(new THREE.CylinderGeometry(0.265, 0.295, 0.56, 14, 1, true, gap / 2, Math.PI * 2 - gap),
-        soft(vestTex, { side: THREE.DoubleSide }), { pos: [0, 1.0, 0], scale: [1, 1, 0.68], parent: g });
+    // ---- Chaleco abierto ----
+    const gap = 1.05;
+    m(new THREE.CylinderGeometry(0.235, 0.275, 0.54, 16, 1, true, gap / 2, Math.PI * 2 - gap),
+        unlit(vestTex, { side: THREE.DoubleSide }), { pos: [0, 1.2, 0], scale: [1, 1, 0.72], parent: g });
 
-    // Lanyard + gafete
+    // ---- Lanyard, gafete y pin ----
     for (const sx of [-1, 1]) {
-        const a = [sx * 0.1, 1.36], b = [sx * 0.03, 0.96];
+        const a = [sx * 0.09, 1.52], b = [sx * 0.025, 1.12];
         const len = Math.hypot(a[0] - b[0], a[1] - b[1]);
-        m(new THREE.BoxGeometry(0.035, len, 0.01), soft(lanyardTex), {
-            pos: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, 0.195],
-            rot: [0.05, 0, Math.atan2(a[0] - b[0], a[1] - b[1])],
+        m(new THREE.PlaneGeometry(0.035, len), unlit(lanyardTex, { side: THREE.DoubleSide }), {
+            pos: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, 0.172],
+            rot: [0.08, 0, Math.atan2(a[0] - b[0], a[1] - b[1])],
             parent: g
         });
     }
-    m(new THREE.BoxGeometry(0.05, 0.05, 0.02), silver, { pos: [0, 0.94, 0.2], parent: g });
+    m(new THREE.BoxGeometry(0.05, 0.05, 0.02), unlit('#DCE0E8'), { pos: [0, 1.1, 0.18], parent: g });
+    m(new THREE.CylinderGeometry(0.05, 0.05, 0.015, 14), [unlit('#8E3B33'), unlit(pinTex), unlit('#8E3B33')],
+        { pos: [-0.15, 1.08, 0.188], rot: [Math.PI / 2, 0, 0], parent: g });
 
-    // Pin
-    m(new THREE.CylinderGeometry(0.055, 0.055, 0.015, 12), [soft('#8A3328'), soft(pinTex), soft('#8A3328')],
-        { pos: [-0.17, 0.93, 0.205], rot: [Math.PI / 2, 0, 0], parent: g });
-
-    // Brazo en reposo (lado derecho de la imagen)
+    // ---- Brazo en reposo (derecha de la imagen) ----
     const rest = new THREE.Group();
-    rest.position.set(0.31, 1.27, 0);
-    rest.rotation.z = 0.35;
+    rest.position.set(0.27, 1.47, 0);
+    rest.rotation.z = 0.28;
     g.add(rest);
-    m(new THREE.CylinderGeometry(0.085, 0.08, 0.56, 8), navy, { pos: [0, -0.28, 0], parent: rest });
-    m(new THREE.SphereGeometry(0.085, 8, 6), skin, { pos: [0, -0.6, 0], scale: [1, 1.1, 0.85], parent: rest });
+    m(new THREE.CylinderGeometry(0.075, 0.09, 0.56, 8), navy, { pos: [0, -0.28, 0], parent: rest });
+    const restHand = hand(rest, skin, { mirror: -1 });
+    restHand.position.y = -0.55;
+    restHand.rotation.y = -0.3;
 
-    // Brazo saludando (lado izquierdo de la imagen)
+    // ---- Brazo saludando (izquierda de la imagen) ----
     const wave = new THREE.Group();
-    wave.position.set(-0.31, 1.27, 0);
-    wave.rotation.z = -2.25;
+    wave.position.set(-0.27, 1.47, 0);
+    wave.rotation.z = -2.2;
     g.add(wave);
-    m(new THREE.CylinderGeometry(0.085, 0.085, 0.32, 8), navy, { pos: [0, -0.16, 0], parent: wave });
-
+    m(new THREE.CylinderGeometry(0.075, 0.08, 0.3, 8), navy, { pos: [0, -0.15, 0], parent: wave });
     const elbow = new THREE.Group();
-    elbow.position.y = -0.32;
+    elbow.position.y = -0.3;
     wave.add(elbow);
-    m(new THREE.SphereGeometry(0.085, 8, 6), navy, { parent: elbow });
-    m(new THREE.CylinderGeometry(0.08, 0.085, 0.28, 8), navy, { pos: [0, -0.14, 0], parent: elbow });
+    m(new THREE.SphereGeometry(0.078, 8, 6), navy, { parent: elbow });
+    m(new THREE.CylinderGeometry(0.08, 0.09, 0.27, 8), navy, { pos: [0, -0.14, 0], parent: elbow });
+    const waveHand = hand(elbow, skin, { mirror: 1 });
+    waveHand.position.y = -0.27;
 
-    const hand = new THREE.Group();
-    hand.position.y = -0.3;
-    elbow.add(hand);
-    m(new THREE.SphereGeometry(0.09, 8, 6), skin, { pos: [0, -0.06, 0], scale: [1, 1.2, 0.7], parent: hand });
-    m(new THREE.SphereGeometry(0.035, 6, 4), skin, { pos: [0.075, -0.02, 0.01], scale: [1, 1.5, 1], rot: [0, 0, 0.6], parent: hand });
-
-    // Cuello
-    m(new THREE.CylinderGeometry(0.075, 0.085, 0.14, 8), skin, { pos: [0, 1.4, 0], parent: g });
+    // ---- Cuello ----
+    m(new THREE.CylinderGeometry(0.06, 0.07, 0.14, 8), skin, { pos: [0, 1.58, 0], parent: g });
 
     // ---- Cabeza ----
     const head = new THREE.Group();
-    head.position.y = 1.79;
+    head.position.y = 1.9;
     g.add(head);
+    const R = 0.3;
+    m(headGeometry(R), skin, { parent: head });
 
+    // cara en un plano apenas delante de la cabeza
     const faceOpen = faceTexture(false);
     const faceBlink = faceTexture(true);
-    const faceMat = soft(faceOpen);
-    m(headGeometry(0.72, 0.7, 0.62), [skin, skin, skin, skin, faceMat, skin], { parent: head });
+    const faceMat = new THREE.MeshBasicMaterial({ map: faceOpen, transparent: true, depthWrite: false });
+    m(new THREE.PlaneGeometry(0.42, 0.42), faceMat, { pos: [0, -0.05, R * 0.9 + 0.01], parent: head });
 
-    // Arete de cruz (oreja izquierda del personaje, derecha de la imagen)
+    // orejas + arete de cruz (oreja izquierda del personaje = derecha de la imagen)
+    for (const sx of [-1, 1]) {
+        m(new THREE.SphereGeometry(0.045, 6, 5), skin, { pos: [sx * 0.29, -0.05, 0], scale: [0.5, 1, 0.8], parent: head });
+    }
+    const silver = unlit('#E2E6EE');
     const ear = new THREE.Group();
-    ear.position.set(0.33, -0.2, 0.17);
+    ear.position.set(0.31, -0.14, 0.01);
     head.add(ear);
-    m(new THREE.TorusGeometry(0.018, 0.006, 4, 8), silver, { parent: ear });
-    m(new THREE.BoxGeometry(0.012, 0.07, 0.012), silver, { pos: [0, -0.055, 0], parent: ear });
-    m(new THREE.BoxGeometry(0.04, 0.012, 0.012), silver, { pos: [0, -0.04, 0], parent: ear });
+    m(new THREE.TorusGeometry(0.014, 0.005, 4, 8), silver, { rot: [0, Math.PI / 2, 0], parent: ear });
+    m(new THREE.BoxGeometry(0.01, 0.06, 0.01), silver, { pos: [0, -0.045, 0], parent: ear });
+    m(new THREE.BoxGeometry(0.01, 0.01, 0.032), silver, { pos: [0, -0.032, 0], parent: ear });
 
-    // ---- Pelo: jellyfish cut ----
+    // ---- Pelo ----
     const hair = new THREE.Group();
     head.add(hair);
+    const capMap = hairTexture(1);
+    const tips = hairTexture(0.5);
+    const fringeMap = hairTexture(1);
+    const mintLock = hairTexture(0.08);
 
-    // Casco: cubre arriba y atrás, sin salirse por la frente
-    const capGeo = new THREE.SphereGeometry(1, 12, 7, 0, Math.PI * 2, 0, Math.PI * 0.56);
-    m(capGeo, blackHair, { pos: [0, 0.1, -0.06], scale: [0.41, 0.36, 0.36], parent: hair });
-
-    // Fleco tipo cortina partido en medio: piezas anchas y planas que se abren
-    // hacia los lados y dejan la frente un poco descubierta al centro.
-    for (const sx of [-1, 1]) {
-        spike(hair, { x: sx * 0.1, y: 0.37, z: 0.27, w: 0.22, len: 0.24, d: 0.08, rx: -0.5, rz: sx * 0.3, mat: blackHair });
-        spike(hair, { x: sx * 0.22, y: 0.34, z: 0.25, w: 0.2, len: 0.32, d: 0.09, rx: -0.35, rz: sx * 0.2, mat: sx < 0 ? mintHair : blackHair });
-        spike(hair, { x: sx * 0.32, y: 0.28, z: 0.2, w: 0.16, len: 0.42, d: 0.1, rx: -0.14, rz: sx * 0.08, mat: blackHair });
-    }
-
-    // Lados: el "hongo" (corto) encima de la capa larga lacia con puntas menta
-    for (const sx of [-1, 1]) {
-        spike(hair, { x: sx * 0.37, y: 0.24, z: 0.0, w: 0.17, len: 0.42, d: 0.46, rz: sx * 0.1, mat: blackHair });
-        spike(hair, { x: sx * 0.35, y: 0.0, z: 0.08, w: 0.13, len: 0.56, d: 0.2, rz: sx * 0.05, mat: tipsHair });
-        spike(hair, { x: sx * 0.35, y: 0.0, z: -0.12, w: 0.15, len: 0.66, d: 0.3, rz: sx * 0.08, mat: tipsHair });
-    }
-
-    // Mullet atrás
-    [-0.24, -0.08, 0.08, 0.24].forEach((x) => {
-        spike(hair, { x, y: 0.22, z: -0.3, w: 0.2, len: 0.44, d: 0.14, rx: 0.18 });
-        spike(hair, { x, y: 0.0, z: -0.3, w: 0.19, len: 0.68, d: 0.12, rx: 0.12, mat: tipsHair });
+    // casco que cubre arriba y atrás (deja la frente libre)
+    m(new THREE.SphereGeometry(R * 1.07, 14, 8, 0, Math.PI * 2, 0, Math.PI * 0.54), unlit(capMap), {
+        pos: [0, 0.03, -0.03], rot: [-0.32, 0, 0], parent: hair
     });
 
-    return { g, head, wave, elbow, hand, faceMat, faceOpen, faceBlink };
+    // fleco tipo cortina partido en medio: termina arriba de las cejas al centro
+    // y baja hacia las sienes; la frente queda descubierta en medio.
+    for (const sx of [-1, 1]) {
+        lock(hair, { angle: sx * 0.3, yTop: 0.3, rTop: R * 0.85, yBot: 0.1, rBot: R * 1.04, width: 0.18, map: fringeMap, tilt: sx * 0.35 });
+        lock(hair, { angle: sx * 0.78, yTop: 0.28, rTop: R * 0.95, yBot: -0.06, rBot: R * 1.12, width: 0.16, map: sx < 0 ? hairTexture(0.35) : fringeMap, tilt: sx * 0.15 });
+    }
+    // "hongo" a los lados (corto, plano)
+    for (const sx of [-1, 1]) {
+        lock(hair, { angle: sx * 1.0, yTop: 0.26, rTop: R * 1.02, yBot: -0.06, rBot: R * 1.2, width: 0.24, map: capMap, curl: 0.04 });
+        lock(hair, { angle: sx * 1.45, yTop: 0.24, rTop: R * 1.04, yBot: -0.04, rBot: R * 1.24, width: 0.26, map: capMap, curl: 0.05 });
+    }
+    // capa larga lacia con puntas menta (cae a los hombros)
+    for (const sx of [-1, 1]) {
+        lock(hair, { angle: sx * 1.15, yTop: 0.0, rTop: R * 1.02, yBot: -0.5, rBot: R * 1.15, width: 0.2, map: tips, curl: 0.06 });
+        lock(hair, { angle: sx * 1.6, yTop: 0.02, rTop: R * 1.04, yBot: -0.56, rBot: R * 1.22, width: 0.24, map: tips, curl: 0.08 });
+        lock(hair, { angle: sx * 2.1, yTop: 0.04, rTop: R * 1.04, yBot: -0.6, rBot: R * 1.25, width: 0.26, map: tips, curl: 0.06 });
+    }
+    // mullet atrás
+    for (let i = 0; i < 5; i++) {
+        const a = Math.PI + (i - 2) * 0.32;
+        lock(hair, { angle: a, yTop: 0.1, rTop: R * 1.04, yBot: -0.64, rBot: R * 1.18, width: 0.26, map: tips, curl: 0.05 });
+    }
+    // un mechón suelto arriba, pequeño (silueta despeinada sin parecer orejas)
+    lock(hair, { angle: -0.2, yTop: 0.3, rTop: R * 0.3, yBot: 0.36, rBot: R * 0.95, width: 0.09, map: capMap, tilt: 0.25 });
+
+    return { g, head, wave, elbow, waveHand, faceMat, faceOpen, faceBlink };
 }
 
-// ---------- Fondo de cuadros ----------
-function checkerTexture() {
-    const t = canvasTexture(16, 16, (ctx, w, h) => {
-        for (let y = 0; y < h; y += 2) for (let x = 0; x < w; x += 2) {
-            px(ctx, x, y, ((x + y) / 2) % 2 ? '#F7D560' : '#FBE58A', 2, 2);
+// ---------- Fondo: ventana de Paint retro + dithering ----------
+function backgroundTexture(dark) {
+    const W = 256, H = 256;
+    return canvasTexture(W, H, (ctx) => {
+        // fondo con dithering de dos tonos (tipo GIF viejo)
+        const a = dark ? '#2A3550' : '#9DAAD8';
+        const b = dark ? '#36446A' : '#B7C2EA';
+        px(ctx, 0, 0, a, W, H);
+        for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+            const t = y / H;
+            const thr = ((x * 7 + y * 13) % 16) / 16;
+            if (thr < 0.35 + 0.4 * Math.sin(x * 0.05) * Math.cos(y * 0.04) - t * 0.2) px(ctx, x, y, b);
         }
+        // ventana estilo Windows 98
+        const wx = 36, wy = 40, ww = 184, wh = 150;
+        px(ctx, wx + 3, wy + 3, 'rgba(0,0,0,0.25)', ww, wh);
+        px(ctx, wx, wy, '#C0C0C0', ww, wh);
+        px(ctx, wx, wy, '#FFFFFF', ww, 1); px(ctx, wx, wy, '#FFFFFF', 1, wh);
+        px(ctx, wx, wy + wh - 1, '#404040', ww, 1); px(ctx, wx + ww - 1, wy, '#404040', 1, wh);
+        // barra de título
+        for (let x = 0; x < ww - 6; x++) {
+            const t = x / (ww - 6);
+            const r = Math.round(0 + 16 * t), gg = Math.round(32 + 100 * t), bb = Math.round(128 + 80 * t);
+            px(ctx, wx + 3 + x, wy + 3, `rgb(${r},${gg},${bb})`, 1, 11);
+        }
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 8px monospace';
+        ctx.fillText('hola.bmp - Paint', wx + 6, wy + 11);
+        for (let i = 0; i < 3; i++) {
+            px(ctx, wx + ww - 14 - i * 11, wy + 4, '#C0C0C0', 9, 9);
+            px(ctx, wx + ww - 14 - i * 11, wy + 4, '#FFFFFF', 9, 1);
+        }
+        // barra de herramientas a la izquierda
+        px(ctx, wx + 3, wy + 17, '#B4B4B4', 18, wh - 40);
+        for (let i = 0; i < 8; i++) px(ctx, wx + 6, wy + 21 + i * 13, '#E0E0E0', 12, 10);
+        // lienzo turquesa con degradado
+        for (let y = 0; y < wh - 44; y++) {
+            const t = y / (wh - 44);
+            px(ctx, wx + 23, wy + 17 + y, `rgb(${Math.round(51 + 40 * t)},${Math.round(160 + 30 * t)},${Math.round(170 + 30 * t)})`, ww - 28, 1);
+        }
+        // paleta de colores abajo
+        const pal = ['#000', '#808080', '#800000', '#808000', '#008000', '#008080', '#000080', '#800080', '#33CCBB', '#FFD166', '#FF9EB5'];
+        pal.forEach((c, i) => px(ctx, wx + 26 + i * 12, wy + wh - 22, c, 10, 10));
+        px(ctx, wx + 5, wy + wh - 22, '#33CCBB', 14, 14);
     });
-    return t;
 }
 
 // ---------- Montaje ----------
 export function mount(container, opts = {}) {
     const stage = createStage(container, {
         pixel: 2,
-        fov: 24,
-        camera: [0, 1.3, 5.4],
-        target: [0, 1.22, 0],
-        baseYaw: 0.12,
+        fov: 26,
+        camera: [0, 1.55, 4.3],
+        target: [0, 1.5, 0],
+        baseYaw: 0.15,
         sway: 0,
         interactive: false,
         ...opts
     });
     if (!stage) return null;
 
-    const { scene, root } = stage;
-    scene.background = checkerTexture();
-
-    // Luz suave, frontal (sin sombras duras)
+    const { scene, root, camera } = stage;
     scene.children.filter((o) => o.isLight).forEach((l) => scene.remove(l));
-    scene.add(new THREE.HemisphereLight(0xffffff, 0x9a8f86, 1.55));
-    const key = new THREE.DirectionalLight(0xfff6ea, 1.2);
-    key.position.set(1.5, 2.5, 5);
-    scene.add(key);
+
+    // fondo como plano fijo detrás (sigue a la cámara)
+    const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
+    const bgMat = new THREE.MeshBasicMaterial({ map: backgroundTexture(isDark()), depthWrite: false });
+    const bg = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), bgMat);
+    bg.renderOrder = -1;
+    scene.add(bg);
+    const placeBg = () => {
+        const d = 6;
+        const h = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * d;
+        bg.scale.set(h * camera.aspect, h, 1);
+        bg.position.copy(camera.position).add(new THREE.Vector3(0, 0, -d).applyQuaternion(camera.quaternion));
+        bg.quaternion.copy(camera.quaternion);
+    };
+    new MutationObserver(() => {
+        bgMat.map.dispose();
+        bgMat.map = backgroundTexture(isDark());
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     const ema = buildEma();
     root.add(ema.g);
 
+    // luz pintada una sola vez (el personaje no tiene luces en tiempo real)
+    root.rotation.y = 0.15;
+    bakeVertexLight(ema.g, { ao: 0.25, aoTop: 2.3, aoBottom: 0.0 });
+
     let nextBlink = 2.2;
     stage.start((t) => {
+        placeBg();
         // saludo
-        ema.elbow.rotation.z = -0.9 + Math.sin(t * 6.5) * 0.35;
-        ema.wave.rotation.z = -2.25 + Math.sin(t * 6.5) * 0.04;
-        // idle
-        ema.g.position.y = Math.abs(Math.sin(t * 2)) * 0.012;
-        ema.head.rotation.z = Math.sin(t * 1.3) * 0.03;
+        ema.elbow.rotation.z = -0.85 + Math.sin(t * 6) * 0.35;
+        ema.waveHand.rotation.z = Math.sin(t * 6 - 0.6) * 0.15;
+        // idle muy sutil
+        ema.g.position.y = Math.sin(t * 1.8) * 0.006;
+        ema.head.rotation.z = Math.sin(t * 1.1) * 0.025;
         // parpadeo
         const blinking = t > nextBlink && t < nextBlink + 0.14;
         const want = blinking ? ema.faceBlink : ema.faceOpen;
         if (ema.faceMat.map !== want) { ema.faceMat.map = want; ema.faceMat.needsUpdate = true; }
-        if (t > nextBlink + 0.14) nextBlink = t + 2.5 + Math.random() * 2;
+        if (t > nextBlink + 0.14) nextBlink = t + 2.6 + Math.random() * 2;
     });
 
     return stage;
