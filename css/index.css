@@ -1235,6 +1235,11 @@ code {
     cursor: grabbing;
 }
 
+.ps2-stage.static,
+.ps2-stage.static:active {
+    cursor: default;
+}
+
 .ps2-stage canvas {
     position: absolute;
     inset: 0;

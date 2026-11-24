@@ -71,11 +71,27 @@ export function skyTexture(dark) {
 }
 
 // ---------- Materiales y mallas ----------
+// "Wobble" de PS1: los vértices se ajustan a una cuadrícula de baja resolución,
+// por eso las figuras tiemblan un poquito al moverse.
+const SNAP = { value: new THREE.Vector2(60, 60) };
+
+function ps1Snap(mat) {
+    mat.onBeforeCompile = (shader) => {
+        shader.uniforms.uSnap = SNAP;
+        shader.vertexShader = 'uniform vec2 uSnap;\n' + shader.vertexShader.replace(
+            '#include <project_vertex>',
+            '#include <project_vertex>\n\tgl_Position.xy = floor(gl_Position.xy / gl_Position.w * uSnap + 0.5) / uSnap * gl_Position.w;'
+        );
+    };
+    mat.customProgramCacheKey = () => 'ps1snap';
+    return mat;
+}
+
 export function lambert(mapOrColor, extra = {}) {
     const opts = { flatShading: true, ...extra };
     if (mapOrColor && mapOrColor.isTexture) opts.map = mapOrColor;
     else if (mapOrColor != null) opts.color = new THREE.Color(mapOrColor);
-    return new THREE.MeshLambertMaterial(opts);
+    return ps1Snap(new THREE.MeshLambertMaterial(opts));
 }
 
 const edgeMats = new Map();
@@ -151,7 +167,8 @@ export function createStage(container, opts = {}) {
         sway = 0.35,
         swaySpeed = 0.5,
         fixedYaw = null,      // solo para capturas de vista previa
-        fixedTime = null
+        fixedTime = null,
+        interactive = true    // false = escena tipo "imagen" (sin arrastrar)
     } = opts;
 
     let renderer;
@@ -212,20 +229,22 @@ export function createStage(container, opts = {}) {
     let userYaw = 0;
     let dragging = false;
     let lastX = 0;
-    container.addEventListener('pointerdown', (e) => {
-        dragging = true;
-        lastX = e.clientX;
-        container.setPointerCapture(e.pointerId);
-    });
-    container.addEventListener('pointermove', (e) => {
-        if (!dragging) return;
-        userYaw += (e.clientX - lastX) * 0.012;
-        lastX = e.clientX;
-        needsRender = true;
-    });
-    const stopDrag = () => { dragging = false; };
-    container.addEventListener('pointerup', stopDrag);
-    container.addEventListener('pointercancel', stopDrag);
+    if (interactive) {
+        container.addEventListener('pointerdown', (e) => {
+            dragging = true;
+            lastX = e.clientX;
+            container.setPointerCapture(e.pointerId);
+        });
+        container.addEventListener('pointermove', (e) => {
+            if (!dragging) return;
+            userYaw += (e.clientX - lastX) * 0.012;
+            lastX = e.clientX;
+            needsRender = true;
+        });
+        const stopDrag = () => { dragging = false; };
+        container.addEventListener('pointerup', stopDrag);
+        container.addEventListener('pointercancel', stopDrag);
+    }
 
     // Pausa cuando no está en pantalla (o el modal está cerrado)
     let visible = true;
@@ -261,6 +280,8 @@ export function createStage(container, opts = {}) {
             : baseYaw + (reduceMotion ? 0 : Math.sin(t * swaySpeed) * sway) + userYaw;
         if (update) update(t, step);
 
+        // cuadrícula del wobble: ~3 pixeles del render por paso
+        SNAP.value.set(renderer.domElement.width / 3, renderer.domElement.height / 3);
         renderer.render(scene, camera);
         needsRender = false;
     };
