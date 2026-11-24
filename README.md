@@ -16,7 +16,7 @@ Portafolio personal de **Emanuel Vazquez**: desarrollador de software autodidact
 ## Tecnologías
 
 - HTML, CSS y JavaScript sin frameworks ni paso de build.
-- [Three.js](https://threejs.org/) (vía CDN) para los modelos 3D low-poly estilo PS2 / Nintendo DS: texturas pixel art generadas en código, flat shading, render a baja resolución y 30 fps.
+- [Three.js](https://threejs.org/) (vía CDN) solo en la página 404, para el letrero 3D low-poly.
 - Google Fonts (Space Grotesk, Inter, JetBrains Mono) y Font Awesome.
 - Alojado en GitHub Pages.
 
@@ -32,18 +32,14 @@ Portafolio personal de **Emanuel Vazquez**: desarrollador de software autodidact
 │   └── proyecto.css      # Estilos de las páginas de proyecto
 ├── js/
 │   ├── index.js          # Tema, scroll, carrusel, modal
-│   ├── proyecto.js       # Tema y animaciones en proyectos
-│   └── ps2/              # Escenas 3D low-poly
-│       ├── ps2.js        # Utilidades compartidas
-│       ├── ema.js        # Figura del hero
-│       └── pangolin.js   # Pangolín del modal de contacto
+│   └── proyecto.js       # Tema y animaciones en proyectos
 ├── cv/                   # CV en PDF (ES / EN)
 └── img/                  # Imágenes, favicon y tarjeta Open Graph
 ```
 
 ## Correr localmente
 
-Los modelos 3D usan módulos de JavaScript, así que hay que servir la carpeta (abrir el HTML con doble clic no funciona):
+Se puede abrir `index.html` directamente, o servir la carpeta para probar rutas como la 404:
 
 ```bash
 python -m http.server 8000
