@@ -6,7 +6,23 @@
     <title>Emanuel Vazquez - Portafolio</title>
     <meta name="description" content="Emanuel Vazquez, desarrollador autodidacta en camino a ser ingeniero de LLMs y Machine Learning. Python, C#, .NET y WebAssembly.">
     <meta name="theme-color" content="#33CCBB">
-    <link rel="icon" type="image/x-icon" href="img/portafolio.ico">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Emanuel Vazquez">
+    <meta property="og:locale" content="es_MX">
+    <meta property="og:title" content="Emanuel Vazquez - Portafolio">
+    <meta property="og:description" content="Desarrollador de software autodidacta en camino a la ingeniería de IA. Python, C#, .NET y WebAssembly.">
+    <meta property="og:url" content="https://ema3901.github.io/">
+    <meta property="og:image" content="https://ema3901.github.io/img/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Emanuel Vazquez, Software Developer / LLM &amp; ML. Figura low-poly sobre un pedestal turquesa.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Emanuel Vazquez - Portafolio">
+    <meta name="twitter:description" content="Desarrollador de software autodidacta en camino a la ingeniería de IA. Python, C#, .NET y WebAssembly.">
+    <meta name="twitter:image" content="https://ema3901.github.io/img/og.png">
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <link rel="alternate icon" type="image/x-icon" href="img/portafolio.ico">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
     <script>
         // Aplica el tema guardado antes de pintar la página (evita parpadeo)
         (function () {
@@ -51,10 +67,10 @@
                 <div class="window">
                     <div class="window-bar">
                         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-                        <span class="title">yo.jpg</span>
+                        <span class="title">ema.obj</span>
                     </div>
-                    <div class="profile-image">
-                        <img src="img/yo.jpg" alt="Ilustración de Emanuel Vazquez" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="profile-image ps2-stage" id="emaStage" data-model="ema" title="Arrastra para girar">
+                        <img class="ps2-fallback" src="img/yo.jpg" alt="Ilustración de Emanuel Vazquez" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <div class="profile-placeholder" style="display: none;">EV</div>
                     </div>
                 </div>
@@ -394,8 +410,8 @@
             </div>
             <div class="modal-content">
                 <div class="modal-side">
-                    <div class="contact-image">
-                        <img src="img/contactdoodle.png" alt="Ilustración" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="contact-image ps2-stage" id="pangolinStage" data-model="pangolin" title="Arrastra para girar">
+                        <img class="ps2-fallback" src="img/contactdoodle.png" alt="Ilustración" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <div class="contact-placeholder" style="display: none;"><i class="fas fa-envelope"></i></div>
                     </div>
                     <h2 class="modal-title" id="modalTitle">Conectemos</h2>
@@ -440,5 +456,21 @@
     </div>
 
     <script src="js/index.js"></script>
+
+    <!-- Modelos 3D low-poly. Si no hay WebGL o falla el CDN, se quedan las imágenes de respaldo. -->
+    <script type="importmap">
+        { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+    </script>
+    <script type="module">
+        const stages = document.querySelectorAll('.ps2-stage[data-model]');
+        stages.forEach(async (el) => {
+            try {
+                const mod = await import(`./js/ps2/${el.dataset.model}.js`);
+                mod.mount(el);
+            } catch (e) {
+                console.warn('Modelo 3D no disponible:', el.dataset.model, e);
+            }
+        });
+    </script>
 </body>
 </html>

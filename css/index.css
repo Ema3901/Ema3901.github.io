@@ -1221,6 +1221,77 @@ code {
     font-size: 3.5rem;
 }
 
+/* =========================================================
+   Escenas 3D low-poly (estilo PS2)
+   ========================================================= */
+.ps2-stage {
+    position: relative;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+}
+
+.ps2-stage:active {
+    cursor: grabbing;
+}
+
+.ps2-stage canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    z-index: 1;
+}
+
+/* Cuando el modelo carga, se oculta la imagen de respaldo */
+.ps2-stage.ready .ps2-fallback,
+.ps2-stage.ready .profile-placeholder,
+.ps2-stage.ready .contact-placeholder {
+    display: none !important;
+}
+
+/* Fondo de la ventana del hero: cielo pixelado + scanlines CRT */
+.profile-image.ps2-stage.ready {
+    background:
+        linear-gradient(to bottom,
+            #7ED6CC 0 10%, #8ADACF 10% 20%, #97DED3 20% 30%, #A5E2D7 30% 40%,
+            #B4E7DC 40% 50%, #C4EBE0 50% 60%, #D4F0E4 60% 70%, #E4F3E6 70% 80%,
+            #F2F5E3 80% 90%, #FFF6E0 90% 100%);
+}
+
+[data-theme="dark"] .profile-image.ps2-stage.ready {
+    background:
+        linear-gradient(to bottom,
+            #0B1E2A 0 10%, #0E2430 10% 20%, #112A36 20% 30%, #14303B 30% 40%,
+            #173641 40% 50%, #1A3C47 50% 60%, #1D424C 60% 70%, #204852 70% 80%,
+            #214C52 80% 90%, #214E52 90% 100%);
+}
+
+.profile-image.ps2-stage.ready::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0 1px, transparent 1px 3px),
+        radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.22) 100%);
+    mix-blend-mode: multiply;
+}
+
+/* El pangolín necesita un área fija para el canvas */
+.contact-image.ps2-stage {
+    width: 100%;
+    max-width: 300px;
+    height: 250px;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+}
+
 .contact-label {
     font-family: var(--font-mono);
     font-size: 0.8rem;
@@ -1410,6 +1481,10 @@ code {
 
     .contact-image img {
         max-height: 140px;
+    }
+
+    .contact-image.ps2-stage {
+        height: 170px;
     }
 
     .modal-main {
